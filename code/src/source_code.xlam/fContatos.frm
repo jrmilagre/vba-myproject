@@ -25,8 +25,6 @@ Private Sub UserForm_Initialize()
     Call EventosCampos
     
     Call btnFiltrar_Click
-    
-    Call btnCancelar_Click
 
 End Sub
 Private Sub UserForm_Terminate()
@@ -123,7 +121,7 @@ Private Sub lstPrincipal_Change()
             lblCabNome.Caption = .Nome
             txbNome.Text = .Nome
             txbNascimento.Text = IIf(IsNull(.Nascimento), "", .Nascimento)
-            txbSalario.Text = IIf(IsNull(.Salario), "", Format(.Salario, "#,##0.00"))
+            txbSalario.Text = Format(.Salario, "#,##0.00")
             
         End With
         
@@ -164,26 +162,33 @@ Private Sub Campos(Acao As String)
 End Sub
 Private Sub lstPrincipalPopular(Pagina As Long)
 
-    Dim n As Long
+    Dim n           As Long
+    Dim vNascimento As Variant
+    Dim vSalario    As Variant
 
     myRst.AbsolutePage = Pagina
     
     With lstPrincipal
-        .Clear                              ' Limpa conteúdo
-        .ColumnCount = 3                    ' Define número de colunas
-        .ColumnWidths = "180 pt; 0pt; 55pt" ' Configura largura das colunas
-        .Font = "Consolas"                  ' Configura fonte
+        .Clear                                      ' Limpa conteúdo
+        .ColumnCount = 4                            ' Define número de colunas
+        .ColumnWidths = "180 pt; 0pt; 55pt; 60pt;"  ' Configura largura das colunas
+        .Font = "Consolas"                          ' Configura fonte
         
         n = 1
         
         While Not myRst.EOF = True And n <= myRst.PageSize
-        
+            
             .AddItem
             
             .List(.ListCount - 1, 0) = myRst.Fields("nome").Value
             .List(.ListCount - 1, 1) = myRst.Fields("id").Value
-            .List(.ListCount - 1, 2) = IIf(IsNull(myRst.Fields("nascimento").Value), "--/--/----", myRst.Fields("nascimento").Value)
             
+            If IsNull(myRst.Fields("nascimento").Value) Then vNascimento = "--/--/----" Else vNascimento = myRst.Fields("nascimento").Value
+            If IsNull(myRst.Fields("salario").Value) Then vSalario = 0 Else vSalario = myRst.Fields("salario").Value
+            
+            .List(.ListCount - 1, 2) = vNascimento
+            .List(.ListCount - 1, 3) = Space(12 - Len(Format(vSalario, "#,##0.00"))) & Format(vSalario, "#,##0.00")
+        
             myRst.MoveNext: n = n + 1
             
         Wend
@@ -222,7 +227,7 @@ Private Sub Gravar(Decisao As String)
                     
                     .Nome = txbNome.Text
                     If RTrim(txbNascimento.Text) = "" Then .Nascimento = Null Else .Nascimento = CDate(txbNascimento.Text)
-                    .Salario = CCur(txbSalario.Text)
+                    If RTrim(txbSalario.Text) = "" Then .Salario = Null Else .Salario = CCur(txbSalario.Text)
                     
                     If Decisao = "Inclusão" Then
                         .CRUD CRUD.Create
@@ -234,8 +239,7 @@ Private Sub Gravar(Decisao As String)
                 
                 MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
                 
-                Call btnFiltrar_Click: Call btnCancelar_Click
-                
+                Call btnFiltrar_Click
                                     
             End If
         
@@ -245,7 +249,7 @@ Private Sub Gravar(Decisao As String)
                 
             MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
             
-            Call btnFiltrar_Click: Call btnCancelar_Click
+            Call btnFiltrar_Click
             
         End If
                

@@ -56,8 +56,18 @@ Public Sub CRUD(Acao As CRUD, Optional ID As Long)
         
             Me.ID = .Fields("id").Value
             Me.Nome = .Fields("nome").Value
-            Me.Nascimento = .Fields("nascimento").Value
-            Me.Salario = .Fields("salario").Value
+            
+            If IsNull(.Fields("nascimento").Value) Then
+                Me.Nascimento = ""
+            Else
+                Me.Nascimento = .Fields("nascimento").Value
+            End If
+            
+            If IsNull(.Fields("salario").Value) Then
+                Me.Salario = 0
+            Else
+                Me.Salario = .Fields("salario").Value
+            End If
             
         End With
         
