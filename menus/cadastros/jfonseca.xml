@@ -1,0 +1,11 @@
+<menu xmlns="http://schemas.microsoft.com/office/2006/01/customui" itemSize= "large">
+	<gallery 
+		id="iCadastros" 
+		imageMso = "AppointmentColorDialog"
+		label="Cadastros" 
+		columns="1" 
+		rows="1" 
+		onAction="Gallery_OnAction">
+		<button id="btnContatos" imageMso = "AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao"/>
+	</gallery>
+</menu>
