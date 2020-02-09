@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<connectionString
+		nome="Producao"
+		provedor="Microsoft.Jet.OLEDB.4.0"
+		caminho="C:\temp\ws-vba\_project_model\data\banco.mdb"
+	>
+	</connectionString>
+</configuration>

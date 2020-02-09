@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fContatos 
    Caption         =   ":: Cadastro de Contatos ::"
-   ClientHeight    =   8310
+   ClientHeight    =   8850
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   10050
+   ClientWidth     =   9960
    OleObjectBlob   =   "fContatos.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -22,14 +22,17 @@ Private bAtualizaScrool     As Boolean
 
 Private Sub UserForm_Initialize()
     
+    Call PopulaCombos
+    
     Call EventosCampos
     
-    Call btnFiltrar_Click
+    Call BuscaRegistros
 
 End Sub
 Private Sub UserForm_Terminate()
     
     Set oContato = Nothing
+    Set myRst = Nothing
     
     Call Desconecta
     
@@ -107,6 +110,8 @@ Private Sub btnCancelar_Click()
     
 End Sub
 Private Sub lstPrincipal_Change()
+
+    Dim n As Long
     
     If lstPrincipal.ListIndex >= 0 Then
     
@@ -115,13 +120,21 @@ Private Sub lstPrincipal_Change()
     
         With oContato
     
-            .CRUD CRUD.Read, (CLng(lstPrincipal.List(lstPrincipal.ListIndex, 1)))
+            .CRUD eCrud.Read, (CLng(lstPrincipal.List(lstPrincipal.ListIndex, 1)))
     
             lblCabID.Caption = IIf(.ID = 0, "", Format(.ID, "000000"))
             lblCabNome.Caption = .Nome
             txbNome.Text = .Nome
             txbNascimento.Text = IIf(IsNull(.Nascimento), "", .Nascimento)
             txbSalario.Text = Format(.Salario, "#,##0.00")
+            
+            If Not IsNull(.Sexo) Then
+                For n = 0 To cbbSexo.ListCount
+                    If cbbSexo.List(n, 1) = .Sexo Then: cbbSexo.ListIndex = n: Exit For
+                Next n
+            Else
+                cbbSexo.ListIndex = -1
+            End If
             
         End With
         
@@ -148,6 +161,7 @@ Private Sub Campos(Acao As String)
         txbNome.Enabled = b: lblNome.Enabled = b
         txbNascimento.Enabled = b: lblNascimento.Enabled = b: btnNascimento.Enabled = b
         txbSalario.Enabled = b: lblSalario.Enabled = b: btnSalario.Enabled = b
+        cbbSexo.Enabled = b: lblSexo.Enabled = b
         
     Else
     
@@ -156,16 +170,24 @@ Private Sub Campos(Acao As String)
         txbNome.Text = Empty
         txbNascimento.Text = IIf(sDecisao = "Inclusão", Date, Empty)
         txbSalario.Text = IIf(sDecisao = "Inclusão", Format(0, "#,##0.00"), "")
+        cbbSexo.ListIndex = -1
              
     End If
 
 End Sub
 Private Sub lstPrincipalPopular(Pagina As Long)
 
-    Dim n           As Long
+    Dim n           As Byte
     Dim vNascimento As Variant
     Dim vSalario    As Variant
+    Dim oLegenda     As control
+    
+    ' Limpa cores da legenda
+    For n = 1 To myRst.PageSize
+        Set oLegenda = Controls("l" & Format(n, "00")): oLegenda.BackColor = &H8000000F
+    Next n
 
+    ' Define página que será exibida do Recordset
     myRst.AbsolutePage = Pagina
     
     With lstPrincipal
@@ -178,6 +200,7 @@ Private Sub lstPrincipalPopular(Pagina As Long)
         
         While Not myRst.EOF = True And n <= myRst.PageSize
             
+            ' Preenche ListBox
             .AddItem
             
             .List(.ListCount - 1, 0) = myRst.Fields("nome").Value
@@ -188,15 +211,24 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             
             .List(.ListCount - 1, 2) = vNascimento
             .List(.ListCount - 1, 3) = Space(12 - Len(Format(vSalario, "#,##0.00"))) & Format(vSalario, "#,##0.00")
-        
+            
+            ' Colore a legenda
+            Set oLegenda = Controls("l" & Format(n, "00"))
+            
+            If myRst.Fields("sexo").Value = "F" Then
+                oLegenda.BackColor = &HFF80FF
+            ElseIf myRst.Fields("sexo").Value = "M" Then
+                oLegenda.BackColor = &HFF8080
+            Else
+                oLegenda.BackColor = &H8000000F
+            End If
+            
+            ' Próximo registro
             myRst.MoveNext: n = n + 1
             
         Wend
         
     End With
-    
-    ' Colore legenda
-'    Call ColoreLegenda
     
     ' Posiciona scroll de navegação em páginas
     lblPaginaAtual.Caption = Pagina
@@ -208,10 +240,10 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     Call TrataBotoesNavegacao
 
 End Sub
-
 Private Sub Gravar(Decisao As String)
 
     Dim vbResposta  As VbMsgBoxResult
+    Dim e           As eCrud
     
     vbResposta = MsgBox("Deseja realmente fazer a " & Decisao & "?", vbYesNo + vbQuestion, "Pergunta")
     
@@ -228,28 +260,29 @@ Private Sub Gravar(Decisao As String)
                     .Nome = txbNome.Text
                     If RTrim(txbNascimento.Text) = "" Then .Nascimento = Null Else .Nascimento = CDate(txbNascimento.Text)
                     If RTrim(txbSalario.Text) = "" Then .Salario = Null Else .Salario = CCur(txbSalario.Text)
+                    If cbbSexo.ListIndex = -1 Then .Sexo = Null Else .Sexo = cbbSexo.List(cbbSexo.ListIndex, 1)
                     
                     If Decisao = "Inclusão" Then
-                        .CRUD CRUD.Create
+                        .CRUD eCrud.Create
                     Else
-                        .CRUD CRUD.Update, .ID
+                        .CRUD eCrud.Update, .ID
                     End If
                     
                 End With
                 
                 MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
                 
-                Call btnFiltrar_Click
+                Call BuscaRegistros
                                     
             End If
         
-        Else
+        Else ' Se for exclusão
         
-            oContato.CRUD Delete, oContato.ID
+            oContato.CRUD eCrud.Delete, oContato.ID
                 
             MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
             
-            Call btnFiltrar_Click
+            Call BuscaRegistros
             
         End If
                
@@ -306,7 +339,15 @@ Private Sub EventosCampos()
 End Sub
 Private Sub btnFiltrar_Click()
 
-    Set myRst = oContato.Todos()
+    Call BuscaRegistros
+
+End Sub
+Private Sub BuscaRegistros(Optional Ordem As String)
+
+    Dim n As Byte
+    Dim o As control
+
+    Set myRst = oContato.Todos(Ordem)
     
     If myRst.PageCount > 0 Then
         
@@ -323,11 +364,14 @@ Private Sub btnFiltrar_Click()
     
         lstPrincipal.Clear
         
-'        Call ColoreLegenda
+        For n = 1 To myRst.PageSize
+            Set o = Controls("l" & Format(n, "00")): o.BackColor = &H8000000F
+        Next n
         
     End If
     
     Call btnCancelar_Click
+    
 
 End Sub
 Private Sub TrataBotoesNavegacao()
@@ -440,31 +484,40 @@ Private Sub scrPagina_Change()
     End If
 
 End Sub
-Private Sub ColoreLegenda()
+Private Sub PopulaCombos()
 
-'    Dim idx         As Integer
-'    Dim c           As control
-'
-'    For Each c In fTitulosReceber.Controls
-'
-'        If TypeName(c) = "Label" And c.Tag = "status" Then
-'
-'            idx = CInt(Mid(c.name, 2, 2))
-'
-'            If idx <= (lstPrincipal.ListCount - 1) Then
-'                If CDate(lstPrincipal.List(idx, 2)) > (Date + 3) Then
-'                    c.BackColor = &HC000& ' Verde
-'                ElseIf CDate(lstPrincipal.List(idx, 2)) < Date Then
-'                    c.BackColor = &HC0& ' Vermelho
-'                Else
-'                    c.BackColor = &HFFFF&         ' Amarelo
-'                End If
-'            Else
-'                c.BackColor = &H8000000F
-'            End If
-'
-'        End If
-'
-'    Next c
+    With cbbSexo
+        .Clear
+        .ColumnCount = 2
+        .ColumnWidths = "60pt; 0pt;"
+        
+        .AddItem
+        .List(.ListCount - 1, 0) = "MASCULINO"
+        .List(.ListCount - 1, 1) = "M"
+        
+        .AddItem
+        .List(.ListCount - 1, 0) = "FEMININO"
+        .List(.ListCount - 1, 1) = "F"
+    End With
+
+End Sub
+Private Sub lstPrincipal_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+
+    MultiPage1.Value = 1
     
+End Sub
+Private Sub lblHdNome_Click()
+
+    Call BuscaRegistros("nome")
+    
+End Sub
+Private Sub lblHdNascimento_Click()
+
+    Call BuscaRegistros("nascimento")
+
+End Sub
+Private Sub lblHdSalario_Click()
+
+    Call BuscaRegistros("salario")
+
 End Sub

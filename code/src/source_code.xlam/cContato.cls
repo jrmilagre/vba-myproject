@@ -14,8 +14,9 @@ Option Explicit
 Private Type TClass
     ID         As Long
     Nome       As String
-    Nascimento As Variant
-    Salario    As Variant
+    Nascimento As Variant   ' Date
+    Salario    As Variant   ' Currency
+    Sexo       As Variant   ' String
 End Type
 
 Private This As TClass
@@ -36,9 +37,12 @@ Public Property Let Nascimento(ByVal Value As Variant): This.Nascimento = Value:
 Public Property Get Salario() As Variant: Salario = This.Salario: End Property
 Public Property Let Salario(ByVal Value As Variant): This.Salario = Value: End Property
 
+Public Property Get Sexo() As Variant: Sexo = This.Sexo: End Property
+Public Property Let Sexo(ByVal Value As Variant): This.Sexo = Value: End Property
+
 ' Métodos
 
-Public Sub CRUD(Acao As CRUD, Optional ID As Long)
+Public Sub CRUD(Acao As Integer, Optional ID As Long)
     
     If ID > 0 Then
     
@@ -48,7 +52,7 @@ Public Sub CRUD(Acao As CRUD, Optional ID As Long)
 
     Set rst = New ADODB.Recordset
     
-    If Acao = Read Then
+    If Acao = Read Then ' READ
         
         With rst
         
@@ -56,18 +60,9 @@ Public Sub CRUD(Acao As CRUD, Optional ID As Long)
         
             Me.ID = .Fields("id").Value
             Me.Nome = .Fields("nome").Value
-            
-            If IsNull(.Fields("nascimento").Value) Then
-                Me.Nascimento = ""
-            Else
-                Me.Nascimento = .Fields("nascimento").Value
-            End If
-            
-            If IsNull(.Fields("salario").Value) Then
-                Me.Salario = 0
-            Else
-                Me.Salario = .Fields("salario").Value
-            End If
+            If IsNull(.Fields("nascimento").Value) Then: Me.Nascimento = "": Else: Me.Nascimento = .Fields("nascimento").Value
+            If IsNull(.Fields("salario").Value) Then: Me.Salario = 0: Else: Me.Salario = .Fields("salario").Value
+            If IsNull(.Fields("sexo").Value) Then: Me.Sexo = Null: Else: Me.Sexo = .Fields("sexo").Value
             
         End With
         
@@ -92,6 +87,7 @@ Public Sub CRUD(Acao As CRUD, Optional ID As Long)
             .Fields("nome").Value = Me.Nome
             .Fields("nascimento").Value = Me.Nascimento
             .Fields("salario").Value = Me.Salario
+            .Fields("sexo").Value = Me.Sexo
             
             .Update
             
@@ -112,7 +108,7 @@ Public Sub CRUD(Acao As CRUD, Optional ID As Long)
     Set rst = Nothing
 
 End Sub
-Public Function Todos() As ADODB.Recordset
+Public Function Todos(Optional Ordem As String) As ADODB.Recordset
 
     sSQL = "SELECT * "
     sSQL = sSQL & "FROM tbl_contatos "
@@ -120,7 +116,9 @@ Public Function Todos() As ADODB.Recordset
 '    sSQL = "SELECT nome, id, nascimento, salario "
 '    sSQL = sSQL & "FROM tbl_contatos "
 '    sSQL = sSQL & "WHERE nome LIKE ('%" & txbPesquisa.Text & "%') "
-'    sSQL = sSQL & "ORDER BY nome"
+    If Ordem <> "" Then
+        sSQL = sSQL & "ORDER BY " & Ordem
+    End If
     
     Set Todos = New ADODB.Recordset
     

@@ -8,7 +8,7 @@ Option Explicit
 ' ---> Microsoft ADO Ext. 2.8 for DDL and Security
 
 ' Declaração de variáveis públicas
-Enum CRUD
+Public Enum eCrud
     Create = 1
     Read = 2
     Update = 3
@@ -20,13 +20,8 @@ Public rst  As ADODB.Recordset
 Public cat  As ADOX.Catalog
 Public sSQL As String
 Public Function Conecta() As Boolean
-    
-    ' Armazena o caminho do banco de dados
-    Dim sCaminho As String
-    
-    sCaminho = Mid(wbCode.Path, 1, Len(wbCode.Path) - 5) & _
-           Application.PathSeparator & "data" & _
-           Application.PathSeparator & "banco.mdb"
+
+    Dim oConfig As New c_Config
     
     ' Cria objeto de conexão com o banco de dados
     Set cnn = New ADODB.Connection
@@ -36,10 +31,10 @@ Public Function Conecta() As Boolean
     Conecta = False
     
     With cnn
-        .Provider = "Microsoft.Jet.OLEDB.4.0"   ' Escolhe o provedor da conexão
-        On Error GoTo Erro                      ' Se a conexão der problema, desvia para o rótulo Erro
-        .Open sCaminho                          ' Abre a conexão com o banco de dados
-        Set cat.ActiveConnection = cnn          ' Seta catálogo
+        .Provider = oConfig.GetProvedorDB   ' Escolhe o provedor da conexão
+        On Error GoTo Erro                  ' Se a conexão der problema, desvia para o rótulo Erro
+        .Open oConfig.GetCaminhoBD          ' Abre a conexão com o banco de dados
+        Set cat.ActiveConnection = cnn      ' Seta catálogo
     End With
     
     ' Se a conexão for um sucesso, retorna Verdadeiro
@@ -60,21 +55,5 @@ Public Sub Desconecta()
 
 End Sub
 
-Public Function ExecutaSQL(ByVal sSQL As String) As ADODB.Recordset
-    
-    ' Cria o objeto Recordset
-    Set ExecutaSQL = New ADODB.Recordset
-
-    ' Abre a tabela
-    With ExecutaSQL
-        .CursorLocation = adUseServer
-        .Open Source:=sSQL, _
-              ActiveConnection:=cnn, _
-              CursorType:=adOpenDynamic, _
-              LockType:=adLockOptimistic, _
-              Options:=adCmdText
-    End With
-                 
-End Function
 
 

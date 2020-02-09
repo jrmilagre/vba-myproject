@@ -1,0 +1,23 @@
+<menu xmlns="http://schemas.microsoft.com/office/2006/01/customui" itemSize= "large">
+	<menu id="menuTestes" imageMso="AppointmentColorDialog" label="Testes">
+		<menu id="submenuTestes-Formularios" imageMso="AppointmentColorDialog" label="Formulários">
+			<button id="btnTestes-Formularios-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao"/>
+		</menu>
+	</menu>
+	<menu id="menuFinancasPessoais" imageMso="AppointmentColorDialog" label="Finanças pessoais">
+		<menu id="submenuFinancasPessoais-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
+			<button id="btnFinancasPessoais-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao"/>
+		</menu>
+	</menu>	
+	<!--
+	<gallery 
+		id="iModulos" 
+		imageMso = "AppointmentColorDialog"
+		label="Módulos" 
+		columns="1" 
+		rows="1" 
+		onAction="Gallery_OnAction">
+		<button id="btnContatos" imageMso = "AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao"/>
+	</gallery>
+	-->
+</menu>

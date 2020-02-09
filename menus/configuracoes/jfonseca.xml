@@ -1,11 +1,11 @@
 <menu xmlns="http://schemas.microsoft.com/office/2006/01/customui" itemSize= "large">
 	<gallery 
-		id="iCadastros" 
+		id="iDatabase" 
 		imageMso = "AppointmentColorDialog"
-		label="Cadastros" 
+		label="Banco de dados" 
 		columns="1" 
 		rows="1" 
 		onAction="Gallery_OnAction">
-		<button id="btnContatos" imageMso = "AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao"/>
+		<button id="btnBackup" imageMso = "AppointmentColorDialog" label="Backup do sistema" onAction="naAcaoBotao"/>
 	</gallery>
 </menu>
