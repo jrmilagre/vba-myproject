@@ -1,4 +1,6 @@
 Attribute VB_Name = "m_Github"
+Public Const PROJ_NAME As String = "VBA_code"
+
 '''
 ' Build instructions:
 ' 1. Open a new workbook in excel, then open the VB editor (Alt+F11)  and from the menu File->Import, import this file:
@@ -43,21 +45,17 @@ Public sheetsToImport As Dictionary 'Key = componentName, Value = File object
 Public vbaProjectToImport As VBProject
 
 Public Sub testImport()
-    Dim proj_name As String
-    proj_name = "VBA_code"
 
     Dim vbaProject As Object
-    Set vbaProject = Application.VBE.VBProjects(proj_name)
+    Set vbaProject = Application.VBE.VBProjects(PROJ_NAME)
     VBA_code.importVbaCode vbaProject
 End Sub
 
 
 Public Sub testExport()
-    Dim proj_name As String
-    proj_name = "VBA_code"
 
     Dim vbaProject As Object
-    Set vbaProject = Application.VBE.VBProjects(proj_name)
+    Set vbaProject = Application.VBE.VBProjects(PROJ_NAME)
     VBA_code.exportVbaCode vbaProject
 End Sub
 

@@ -8,17 +8,21 @@ Private oXML        As Object
 
 Public Sub naAcaoBotao(control As IRibbonControl)
 
+    Dim frm As Object
+
     If Conecta() = True Then
     
-        Select Case control.ID
+        On Error GoTo err
         
-            Case "btnTestes-Formularios-Contatos": fContatos.Show
-            Case "btnFinancasPessoais-Cadastros-Contatos": fContatos.Show
-            Case Else: MsgBox "Botão ainda não implementado", vbInformation
-            
-        End Select
+        Set frm = UserForms.Add(control.Tag)
+        frm.Show
+        Exit Sub
         
     End If
+    
+err:
+    
+    MsgBox "Botão ainda não implementado", vbInformation
 
 End Sub
 Sub ribbonLoaded(ribbon As IRibbonUI)

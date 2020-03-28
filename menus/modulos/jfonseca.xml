@@ -1,23 +1,21 @@
 <menu xmlns="http://schemas.microsoft.com/office/2006/01/customui" itemSize= "large">
-	<menu id="menuTestes" imageMso="AppointmentColorDialog" label="Testes">
-		<menu id="submenuTestes-Formularios" imageMso="AppointmentColorDialog" label="Formulários">
-			<button id="btnTestes-Formularios-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao"/>
-		</menu>
-	</menu>
-	<menu id="menuFinancasPessoais" imageMso="AppointmentColorDialog" label="Finanças pessoais">
-		<menu id="submenuFinancasPessoais-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
-			<button id="btnFinancasPessoais-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao"/>
+	<!--
+		SIGLAS
+		m: Menu
+		sm: Submenu
+		FPE: Finanças Pessoais
+		CCI: Construção Civil
+	-->
+	<!--Módulo: Finanças Pessoais-->
+	<menu id="mFPE" imageMso="AppointmentColorDialog" label="Finanças pessoais">
+		<menu id="smFPE-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
+			<button id="smFPE-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
 		</menu>
 	</menu>	
-	<!--
-	<gallery 
-		id="iModulos" 
-		imageMso = "AppointmentColorDialog"
-		label="Módulos" 
-		columns="1" 
-		rows="1" 
-		onAction="Gallery_OnAction">
-		<button id="btnContatos" imageMso = "AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao"/>
-	</gallery>
-	-->
+	<!--Módulo: Construção Civil-->
+	<menu id="mCCI" imageMso="AppointmentColorDialog" label="ConstrutoraCivil">
+		<menu id="smCCI-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
+			<button id="smCCI-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
+		</menu>
+	</menu>	
 </menu>

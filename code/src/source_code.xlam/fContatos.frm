@@ -180,7 +180,7 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     Dim n           As Byte
     Dim vNascimento As Variant
     Dim vSalario    As Variant
-    Dim oLegenda     As control
+    Dim oLegenda    As control
     
     ' Limpa cores da legenda
     For n = 1 To myRst.PageSize
