@@ -3,19 +3,27 @@
 		SIGLAS
 		m: Menu
 		sm: Submenu
-		FPE: Finanças Pessoais
 		CCI: Construção Civil
+		FPE: Finanças Pessoais
+		MOC: Medicina Ocupacional
 	-->
+	<!--Módulo: Construção Civil-->
+	<menu id="mCCI" image="CCI" label="Construção Civil">
+		<menu id="smCCI-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
+			<button id="smCCI-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
+		</menu>
+	</menu>			
 	<!--Módulo: Finanças Pessoais-->
-	<menu id="mFPE" imageMso="AppointmentColorDialog" label="Finanças pessoais">
+	<menu id="mFPE" image="FPE" label="Finanças pessoais">
 		<menu id="smFPE-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
 			<button id="smFPE-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
 		</menu>
 	</menu>	
-	<!--Módulo: Construção Civil-->
-	<menu id="mCCI" imageMso="AppointmentColorDialog" label="ConstrutoraCivil">
-		<menu id="smCCI-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
-			<button id="smCCI-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
+
+	<!--Módulo: Medicina Ocupacional-->
+	<menu id="mMOC" image="MOC" label="Medicina Ocupacional">
+		<menu id="smMOC-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
+			<button id="smMOC-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
 		</menu>
-	</menu>	
+	</menu>		
 </menu>
