@@ -7,6 +7,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fContatos
    ClientWidth     =   9960
    OleObjectBlob   =   "fContatos.frx":0000
    StartUpPosition =   1  'CenterOwner
+   Tag             =   "tbl_contatos"
 End
 Attribute VB_Name = "fContatos"
 Attribute VB_GlobalNameSpace = False
@@ -29,6 +30,7 @@ Private Sub UserForm_Initialize()
     Call BuscaRegistros
 
 End Sub
+
 Private Sub UserForm_Terminate()
     
     Set oContato = Nothing
@@ -120,9 +122,9 @@ Private Sub lstPrincipal_Change()
     
         With oContato
     
-            .CRUD eCrud.Read, (CLng(lstPrincipal.List(lstPrincipal.ListIndex, 1)))
+            .CRUD eCrud.Read, (CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0)))
     
-            lblCabID.Caption = IIf(.ID = 0, "", Format(.ID, "000000"))
+            lblCabID.Caption = IIf(.ID = 0, "", .ID)
             lblCabNome.Caption = .Nome
             txbNome.Text = .Nome
             txbNascimento.Text = IIf(IsNull(.Nascimento), "", .Nascimento)
@@ -193,7 +195,7 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     With lstPrincipal
         .Clear                                      ' Limpa conteúdo
         .ColumnCount = 4                            ' Define número de colunas
-        .ColumnWidths = "180 pt; 0pt; 55pt; 60pt;"  ' Configura largura das colunas
+        .ColumnWidths = "40pt; 180 pt; 55pt; 60pt;" ' Configura largura das colunas
         .Font = "Consolas"                          ' Configura fonte
         
         n = 1
@@ -203,8 +205,9 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             ' Preenche ListBox
             .AddItem
             
-            .List(.ListCount - 1, 0) = myRst.Fields("nome").Value
-            .List(.ListCount - 1, 1) = myRst.Fields("id").Value
+            .List(.ListCount - 1, 0) = myRst.Fields("id").Value
+            .List(.ListCount - 1, 1) = myRst.Fields("nome").Value
+            
             
             If IsNull(myRst.Fields("nascimento").Value) Then vNascimento = "--/--/----" Else vNascimento = myRst.Fields("nascimento").Value
             If IsNull(myRst.Fields("salario").Value) Then vSalario = 0 Else vSalario = myRst.Fields("salario").Value
@@ -301,7 +304,7 @@ Private Sub EventosCampos()
 
     ' Declara variáveis
     Dim oControle   As MSForms.control
-    Dim oEvento     As c_EventoCampo
+    Dim oEvento     As c_Evento
     Dim sTag        As String
     Dim sField()    As String
     
@@ -313,7 +316,7 @@ Private Sub EventosCampos()
         
             If TypeName(oControle) = "TextBox" Then
             
-                Set oEvento = New c_EventoCampo
+                Set oEvento = New c_Evento
                 
                 With oEvento
                 
@@ -325,21 +328,24 @@ Private Sub EventosCampos()
                     .MaxLength = cat.Tables(sField(0)).Columns(sField(1)).DefinedSize
                     .Nullable = cat.Tables(sField(0)).Columns(sField(1)).Properties("Nullable")
                     
-                    Set .cGeneric = oControle
+                    Set .cTextBox = oControle
                     
                 End With
                 
                 colControles.Add oEvento
                 
+            ElseIf TypeName(oControle) = "Label" Then
+            
+                Set oEvento = New c_Evento
+                
+                Set oEvento.cLabel = oControle
+                
+                colControles.Add oEvento
+                    
             End If
             
         End If
     Next
-
-End Sub
-Private Sub btnFiltrar_Click()
-
-    Call BuscaRegistros
 
 End Sub
 Private Sub BuscaRegistros(Optional Ordem As String)
@@ -347,7 +353,7 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     Dim n As Byte
     Dim o As control
 
-    Set myRst = oContato.Todos(Ordem)
+    Set myRst = oContato.Todos(Ordem, txbFiltro.Text)
     
     If myRst.PageCount > 0 Then
         
@@ -506,18 +512,58 @@ Private Sub lstPrincipal_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     MultiPage1.Value = 1
     
 End Sub
-Private Sub lblHdNome_Click()
 
-    Call BuscaRegistros("nome")
+Private Sub lblHdCodigo_Click(): Call BuscaRegistros("id"): End Sub
+Private Sub lblHdNome_Click(): Call BuscaRegistros("nome"): End Sub
+Private Sub lblHdNascimento_Click(): Call BuscaRegistros("nascimento"): End Sub
+Private Sub lblHdSalario_Click(): Call BuscaRegistros("salario"): End Sub
+
+Private Sub lblFiltrar_Click()
+
+    oFiltro.Tabela = Me.Tag
+    oFiltro.Filtro = txbFiltro.Text
+    
+    f_Filtro.Show
+    
+    txbFiltro.Text = oFiltro.Filtro
+    
+    Call BuscaRegistros
+
+End Sub
+Private Sub lblFiltrar_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+
+    With lblFiltrar.Font
+        .Underline = True
+        .Bold = True
+    End With
+
+End Sub
+Private Sub lblLimpar_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+
+    With lblLimpar.Font
+        .Underline = True
+        .Bold = True
+    End With
+
+End Sub
+Private Sub MultiPage1_MouseMove(ByVal Index As Long, ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+
+    With lblFiltrar.Font
+        .Underline = False
+        .Bold = False
+    End With
+    
+    With lblLimpar.Font
+        .Underline = False
+        .Bold = False
+    End With
     
 End Sub
-Private Sub lblHdNascimento_Click()
-
-    Call BuscaRegistros("nascimento")
-
-End Sub
-Private Sub lblHdSalario_Click()
-
-    Call BuscaRegistros("salario")
+Private Sub lblLimpar_Click()
+    
+    txbFiltro.Text = ""
+    
+    Call BuscaRegistros
 
 End Sub
+

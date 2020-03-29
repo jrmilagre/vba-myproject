@@ -15,10 +15,11 @@ Public Enum eCrud
     Delete = 4
 End Enum
 
-Public cnn  As ADODB.Connection
-Public rst  As ADODB.Recordset
-Public cat  As ADOX.Catalog
-Public sSQL As String
+Public cnn      As ADODB.Connection
+Public rst      As ADODB.Recordset
+Public cat      As ADOX.Catalog
+Public sSQL     As String
+Public oFiltro  As New c_Filtro
 Public Function Conecta() As Boolean
 
     Dim oConfig As New c_Config

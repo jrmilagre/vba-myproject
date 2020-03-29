@@ -17,6 +17,7 @@ Private Type TClass
     Nascimento As Variant   ' Date
     Salario    As Variant   ' Currency
     Sexo       As Variant   ' String
+    Filtro     As String
 End Type
 
 Private This As TClass
@@ -39,6 +40,9 @@ Public Property Let Salario(ByVal Value As Variant): This.Salario = Value: End P
 
 Public Property Get Sexo() As Variant: Sexo = This.Sexo: End Property
 Public Property Let Sexo(ByVal Value As Variant): This.Sexo = Value: End Property
+
+Public Property Get Filtro() As String: Filtro = This.Filtro: End Property
+Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Property
 
 ' Métodos
 
@@ -108,7 +112,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
     Set rst = Nothing
 
 End Sub
-Public Function Todos(Optional Ordem As String) As ADODB.Recordset
+Public Function Todos(Optional Ordem As String, Optional Filtro As String) As ADODB.Recordset
 
     sSQL = "SELECT * "
     sSQL = sSQL & "FROM tbl_contatos "
@@ -116,9 +120,15 @@ Public Function Todos(Optional Ordem As String) As ADODB.Recordset
 '    sSQL = "SELECT nome, id, nascimento, salario "
 '    sSQL = sSQL & "FROM tbl_contatos "
 '    sSQL = sSQL & "WHERE nome LIKE ('%" & txbPesquisa.Text & "%') "
+    If Filtro <> "" Then
+        sSQL = sSQL & "WHERE " & Filtro & " "
+    End If
+    
     If Ordem <> "" Then
         sSQL = sSQL & "ORDER BY " & Ordem
     End If
+    
+
     
     Set Todos = New ADODB.Recordset
     
