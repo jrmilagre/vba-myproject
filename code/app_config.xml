@@ -6,4 +6,8 @@
 		caminho="C:\temp\ws-vba\_project_model\data\banco.mdb"
 	>
 	</connectionString>
+	<colors
+		fonteCab="34 139 34"
+	>
+	</colors>
 </configuration>

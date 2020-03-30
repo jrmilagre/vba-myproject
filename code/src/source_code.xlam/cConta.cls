@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "cContato"
+Attribute VB_Name = "cConta"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -12,35 +12,28 @@ Option Explicit
 ' Classe
 
 Private Type TClass
-    ID         As Long
-    Nome       As String
-    Nascimento As Variant   ' Date
-    Salario    As Variant   ' Currency
-    Sexo       As Variant   ' String
-    Filtro     As String
-    Ordem      As String
+    ID              As Long
+    Conta           As String
+    SaldoInicial    As Saldo
+
+    Filtro          As String
+    Ordem           As String
 End Type
 
 Private This As TClass
 
-Private Const sTabela As String = "tbl_contatos"
+Private Const sTabela As String = "tbl_contas"
 
 ' Propriedades
 
 Public Property Get ID() As Long: ID = This.ID: End Property
 Public Property Let ID(ByVal Value As Long): This.ID = CLng(Value): End Property
 
-Public Property Get Nome() As String: Nome = This.Nome: End Property
-Public Property Let Nome(ByVal Value As String): This.Nome = Value: End Property
+Public Property Get Conta() As String: Conta = This.Conta: End Property
+Public Property Let Conta(ByVal Value As String): This.Conta = Value: End Property
 
-Public Property Get Nascimento() As Variant: Nascimento = This.Nascimento: End Property
-Public Property Let Nascimento(ByVal Value As Variant): This.Nascimento = Value: End Property
-
-Public Property Get Salario() As Variant: Salario = This.Salario: End Property
-Public Property Let Salario(ByVal Value As Variant): This.Salario = Value: End Property
-
-Public Property Get Sexo() As Variant: Sexo = This.Sexo: End Property
-Public Property Let Sexo(ByVal Value As Variant): This.Sexo = Value: End Property
+Public Property Get SaldoInicial() As Currency: SaldoInicial = This.SaldoInicial: End Property
+Public Property Let SaldoInicial(ByVal Value As Currency): This.SaldoInicial = Value: End Property
 
 Public Property Get Filtro() As String: Filtro = This.Filtro: End Property
 Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Property
@@ -68,10 +61,8 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             .Open sSQL, cnn, adOpenStatic, adLockReadOnly
         
             Me.ID = .Fields("id").Value
-            Me.Nome = .Fields("nome").Value
-            If IsNull(.Fields("nascimento").Value) Then: Me.Nascimento = "": Else: Me.Nascimento = .Fields("nascimento").Value
-            If IsNull(.Fields("salario").Value) Then: Me.Salario = 0: Else: Me.Salario = .Fields("salario").Value
-            If IsNull(.Fields("sexo").Value) Then: Me.Sexo = Null: Else: Me.Sexo = .Fields("sexo").Value
+            Me.Conta = .Fields("conta").Value
+            Me.SaldoInicial = .Fields("saldo_inicial").Value
             
         End With
         
@@ -93,10 +84,9 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
                 
             End If
             
-            .Fields("nome").Value = Me.Nome
-            .Fields("nascimento").Value = Me.Nascimento
-            .Fields("salario").Value = Me.Salario
-            .Fields("sexo").Value = Me.Sexo
+            .Fields("conta").Value = Me.Conta
+            .Fields("saldo_inicial").Value = Me.SaldoInicial
+
             
             .Update
             
@@ -127,7 +117,7 @@ Public Function Todos(Optional Ordem As String, Optional Filtro As String) As AD
     On Error GoTo err:
 
     sSQL = "SELECT * "
-    sSQL = sSQL & "FROM tbl_contatos "
+    sSQL = sSQL & "FROM tbl_contas "
     
     If Filtro <> "" Then
         sSQL = sSQL & "WHERE " & Filtro & " "

@@ -47,5 +47,18 @@ Public Function GetProvedorDB() As String
     GetProvedorDB = oXML.SelectSingleNode("//configuration/connectionString/@provedor").Value
 
 End Function
+Public Function GetCorInfoCab() As String
+
+    Set oXML = CreateObject("MSXML2.DOMDocument")
+ 
+    With oXML
+        .async = False
+        .validateOnParse = False
+        .Load (Me.CaminhoXML)
+    End With
+
+    GetCorInfoCab = oXML.SelectSingleNode("//configuration/colors/@fonteCab").Value
+
+End Function
 
 

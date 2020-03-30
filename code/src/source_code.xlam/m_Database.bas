@@ -20,9 +20,8 @@ Public rst      As ADODB.Recordset
 Public cat      As ADOX.Catalog
 Public sSQL     As String
 Public oFiltro  As New c_Filtro
+Public oConfig  As New c_Config
 Public Function Conecta() As Boolean
-
-    Dim oConfig As New c_Config
     
     ' Cria objeto de conexão com o banco de dados
     Set cnn = New ADODB.Connection

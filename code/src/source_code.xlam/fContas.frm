@@ -1,19 +1,20 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fContatos 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fContas 
    Caption         =   ":: Cadastro de Contatos ::"
    ClientHeight    =   9105
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9960
-   OleObjectBlob   =   "fContatos.frx":0000
+   OleObjectBlob   =   "fContas.frx":0000
    StartUpPosition =   1  'CenterOwner
    Tag             =   "tbl_contatos"
 End
-Attribute VB_Name = "fContatos"
+Attribute VB_Name = "fContas"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 Option Explicit
 
 Private oContato            As New cContato
@@ -310,7 +311,6 @@ Private Sub Eventos()
     Dim oEvento     As c_Evento
     Dim sTag        As String
     Dim sField()    As String
-    Dim sCor()   As String
     
     ' Laço para percorrer todos os TextBox e atribuir eventos
     ' de acordo com o tipo de cada campo
@@ -345,13 +345,6 @@ Private Sub Eventos()
                 Set oEvento.cLabel = oControle
                 
                 colControles.Add oEvento
-                
-                If oControle.Tag = "CAB" Then
-                
-                    sCor() = Split(oConfig.GetCorInfoCab, " ")
-                    oControle.ForeColor = RGB(CInt(sCor(0)), CInt(sCor(1)), CInt(sCor(2)))
-                
-                End If
                 
             End If
                 

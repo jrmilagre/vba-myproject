@@ -9,20 +9,20 @@
 	-->
 	<!--Módulo: Construção Civil-->
 	<menu id="mCCI" image="CCI" label="Construção Civil">
-		<menu id="smCCI-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
+		<menu id="smCCI-Cadastros" image="cadastros" label="Cadastros">
 			<button id="smCCI-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
 		</menu>
 	</menu>			
 	<!--Módulo: Finanças Pessoais-->
 	<menu id="mFPE" image="FPE" label="Finanças pessoais">
-		<menu id="smFPE-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
+		<menu id="smFPE-Cadastros" image="cadastros" label="Cadastros">
 			<button id="smFPE-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
 		</menu>
 	</menu>	
 
 	<!--Módulo: Medicina Ocupacional-->
 	<menu id="mMOC" image="MOC" label="Medicina Ocupacional">
-		<menu id="smMOC-Cadastros" imageMso="AppointmentColorDialog" label="Cadastros">
+		<menu id="smMOC-Cadastros" image="cadastros" label="Cadastros">
 			<button id="smMOC-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
 		</menu>
 	</menu>		
