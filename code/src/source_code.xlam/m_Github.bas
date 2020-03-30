@@ -113,7 +113,7 @@ Public Sub exportVbaCode(vbaProject As VBProject)
     On Error GoTo 0
     If vbProjectFileName = "" Then
         'In this case it is a new workbook, we skip it
-        Debug.Print "No file name for project " & vbaProject.name & ", skipping"
+        Debug.Print "No file name for project " & vbaProject.Name & ", skipping"
         Exit Sub
     End If
 
@@ -157,8 +157,8 @@ End Function
 
 'To export everything else but sheets
 Private Sub exportComponent(exportPath As String, component As VBComponent, Optional extension As String = ".cls")
-    Debug.Print "exporting " & component.name & extension
-    component.Export exportPath & "\" & component.name & extension
+    Debug.Print "exporting " & component.Name & extension
+    component.Export exportPath & "\" & component.Name & extension
 End Sub
 
 
@@ -166,8 +166,8 @@ End Sub
 Private Sub exportLines(exportPath As String, component As VBComponent)
     Dim extension As String: extension = ".sheet.cls"
     Dim fileName As String
-    fileName = exportPath & "\" & component.name & extension
-    Debug.Print "exporting " & component.name & extension
+    fileName = exportPath & "\" & component.Name & extension
+    Debug.Print "exporting " & component.Name & extension
     'component.Export exportPath & "\" & component.name & extension
     Dim FSO As New Scripting.FileSystemObject
     Dim outStream As TextStream
@@ -187,7 +187,7 @@ Public Sub importVbaCode(vbaProject As VBProject, Optional includeClassFiles As 
     On Error GoTo 0
     If vbProjectFileName = "" Then
         'In this case it is a new workbook, we skip it
-        Debug.Print "No file name for project " & vbaProject.name & ", skipping"
+        Debug.Print "No file name for project " & vbaProject.Name & ", skipping"
         Exit Sub
     End If
 
@@ -195,7 +195,7 @@ Public Sub importVbaCode(vbaProject As VBProject, Optional includeClassFiles As 
     export_path = getSourceDir(vbProjectFileName, createIfNotExists:=False)
     If export_path = "" Then
         'The source directory does not exist, code has never been exported for this vbaProject.
-        Debug.Print "No import directory for project " & vbaProject.name & ", skipping"
+        Debug.Print "No import directory for project " & vbaProject.Name & ", skipping"
         Exit Sub
     End If
 
@@ -224,13 +224,13 @@ Public Sub importVbaCode(vbaProject As VBProject, Optional includeClassFiles As 
     Debug.Print "Invoking 'VBA_code.importComponents'with Application.Ontime with delay " & IMPORT_DELAY
     ' to prevent duplicate modules, like MyClass1 etc.
     Application.OnTime Now() + TimeValue(IMPORT_DELAY), "'VBA_code.importComponents'"
-    Debug.Print "almost finished importing code for " & vbaProject.name
+    Debug.Print "almost finished importing code for " & vbaProject.Name
 End Sub
 
 
 Private Sub checkHowToImport(file As Object, includeClassFiles As Boolean)
     Dim fileName As String
-    fileName = file.name
+    fileName = file.Name
     Dim componentName As String
     componentName = Left(fileName, InStr(fileName, ".") - 1)
     If componentName = "Build" Then
@@ -270,7 +270,7 @@ Private Sub removeComponent(vbaProject As VBProject, componentName As String)
     If componentExists(vbaProject, componentName) Then
         Dim c As VBComponent
         Set c = vbaProject.VBComponents(componentName)
-        Debug.Print "removing " & c.name
+        Debug.Print "removing " & c.Name
         vbaProject.VBComponents.Remove c
     End If
 End Sub
@@ -294,7 +294,7 @@ Public Sub importComponents()
         importLines vbaProjectToImport, sheetsToImport(componentName)
     Next
 
-    Debug.Print "Finished importing code for " & vbaProjectToImport.name
+    Debug.Print "Finished importing code for " & vbaProjectToImport.Name
     'We're done, clear globals explicitly to free memory.
     Set componentsToImport = Nothing
     Set vbaProjectToImport = Nothing
@@ -311,7 +311,7 @@ End Sub
 
 Private Sub importLines(vbaProject As VBProject, file As Object)
     Dim componentName As String
-    componentName = Left(file.name, InStr(file.name, ".") - 1)
+    componentName = Left(file.Name, InStr(file.Name, ".") - 1)
     Dim c As VBComponent
     If Not componentExists(vbaProject, componentName) Then
         ' Create a sheet to import this code into. We cannot set the ws.codeName property which is read-only,
@@ -319,10 +319,10 @@ Private Sub importLines(vbaProject As VBProject, file As Object)
         Dim addedSheetCodeName As String
         addedSheetCodeName = addSheetToWorkbook(componentName, vbaProject.fileName)
         Set c = vbaProject.VBComponents(addedSheetCodeName)
-        c.name = componentName
+        c.Name = componentName
     End If
     Set c = vbaProject.VBComponents(componentName)
-    Debug.Print "Importing lines from " & componentName & " into component " & c.name
+    Debug.Print "Importing lines from " & componentName & " into component " & c.Name
 
     ' At this point compilation errors may cause a crash, so we ignore those.
     On Error Resume Next
@@ -332,10 +332,10 @@ Private Sub importLines(vbaProject As VBProject, file As Object)
 End Sub
 
 
-Public Function componentExists(ByRef proj As VBProject, name As String) As Boolean
+Public Function componentExists(ByRef proj As VBProject, Name As String) As Boolean
     On Error GoTo doesnt
     Dim c As VBComponent
-    Set c = proj.VBComponents(name)
+    Set c = proj.VBComponents(Name)
     componentExists = True
     Exit Function
 doesnt:
@@ -368,7 +368,7 @@ Public Function addSheetToWorkbook(sheetName As String, workbookFilePath As Stri
     If Not wb Is Nothing Then
         Dim ws As Worksheet
         Set ws = wb.Sheets.Add(After:=wb.Sheets(wb.Sheets.Count))
-        ws.name = sheetName
+        ws.Name = sheetName
         'ws.CodeName = sheetName: cannot assign to read only property
         Debug.Print "Sheet added " & sheetName
         addSheetToWorkbook = ws.CodeName

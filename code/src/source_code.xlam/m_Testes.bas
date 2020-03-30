@@ -55,9 +55,9 @@ Sub LerXML2()
                 For Each level3 In level2.ChildNodes '.Item(3).ChildNodes
                 
                     If level3.BaseName = "add" Then
-                        Debug.Print level3.Attributes.Item(0).name & "=" & level3.Attributes.Item(0).Value
-                        Debug.Print level3.Attributes.Item(1).name & "=" & level3.Attributes.Item(1).Value
-                        Debug.Print level3.Attributes.Item(2).name & "=" & level3.Attributes.Item(2).Value
+                        Debug.Print level3.Attributes.Item(0).Name & "=" & level3.Attributes.Item(0).Value
+                        Debug.Print level3.Attributes.Item(1).Name & "=" & level3.Attributes.Item(1).Value
+                        Debug.Print level3.Attributes.Item(2).Name & "=" & level3.Attributes.Item(2).Value
                     End If
                   
                 Next level3

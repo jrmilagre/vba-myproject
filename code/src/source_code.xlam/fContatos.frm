@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fContatos 
    Caption         =   ":: Cadastro de Contatos ::"
-   ClientHeight    =   9015
+   ClientHeight    =   9105
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9960
@@ -25,7 +25,7 @@ Private Sub UserForm_Initialize()
     
     Call PopulaCombos
     
-    Call EventosCampos
+    Call Eventos
     
     Call BuscaRegistros
 
@@ -248,6 +248,8 @@ Private Sub Gravar(Decisao As String)
     Dim vbResposta  As VbMsgBoxResult
     Dim e           As eCrud
     
+    On Error GoTo err
+    
     vbResposta = MsgBox("Deseja realmente fazer a " & Decisao & "?", vbYesNo + vbQuestion, "Pergunta")
     
     If vbResposta = vbYes Then
@@ -290,7 +292,8 @@ Private Sub Gravar(Decisao As String)
         End If
                
     ElseIf vbResposta = vbNo Then
-        
+    
+err:
         If Decisao = "Exclusão" Then
             
             Call btnCancelar_Click
@@ -300,7 +303,7 @@ Private Sub Gravar(Decisao As String)
     End If
     
 End Sub
-Private Sub EventosCampos()
+Private Sub Eventos()
 
     ' Declara variáveis
     Dim oControle   As MSForms.control
@@ -335,24 +338,62 @@ Private Sub EventosCampos()
                 colControles.Add oEvento
                 
             ElseIf TypeName(oControle) = "Label" Then
-            
+                
                 Set oEvento = New c_Evento
                 
                 Set oEvento.cLabel = oControle
                 
                 colControles.Add oEvento
-                    
+                
             End If
-            
+                
         End If
+        
     Next
 
 End Sub
 Private Sub BuscaRegistros(Optional Ordem As String)
 
-    Dim n As Byte
-    Dim o As control
+    Dim n       As Byte
+    Dim o       As control
+    Dim sOrdem  As String
+    Dim a()     As String
 
+    On Error GoTo err
+    
+    If Ordem <> "" Then
+    
+        If oContato.Ordem <> "" Then
+    
+            a() = Split(oContato.Ordem, " ")
+            
+            sOrdem = oContato.Ordem
+            
+            If Ordem = a(0) Then
+                
+                If a(1) = "ASC" Then
+                    Ordem = Ordem & " DESC"
+                    oContato.Ordem = Ordem
+                Else
+                    Ordem = Ordem & " ASC"
+                    oContato.Ordem = Ordem
+                End If
+            Else
+                
+                Ordem = Ordem & " ASC"
+                oContato.Ordem = Ordem
+            
+            End If
+            
+        Else
+        
+            Ordem = Ordem & " ASC"
+            oContato.Ordem = Ordem
+        
+        End If
+    
+    End If
+    
     Set myRst = oContato.Todos(Ordem, txbFiltro.Text)
     
     If myRst.PageCount > 0 Then
@@ -376,9 +417,9 @@ Private Sub BuscaRegistros(Optional Ordem As String)
         
     End If
     
+err:
     Call btnCancelar_Click
     
-
 End Sub
 Private Sub TrataBotoesNavegacao()
 
@@ -495,14 +536,14 @@ Private Sub PopulaCombos()
     With cbbSexo
         .Clear
         .ColumnCount = 2
-        .ColumnWidths = "60pt; 0pt;"
+        .ColumnWidths = "20pt; 0pt;"
         
         .AddItem
-        .List(.ListCount - 1, 0) = "MASCULINO"
+        .List(.ListCount - 1, 0) = "M"
         .List(.ListCount - 1, 1) = "M"
         
         .AddItem
-        .List(.ListCount - 1, 0) = "FEMININO"
+        .List(.ListCount - 1, 0) = "F"
         .List(.ListCount - 1, 1) = "F"
     End With
 
@@ -520,44 +561,39 @@ Private Sub lblHdSalario_Click(): Call BuscaRegistros("salario"): End Sub
 
 Private Sub lblFiltrar_Click()
 
-    oFiltro.Tabela = Me.Tag
+    oFiltro.Tabela = "tbl_contatos" ' Pode ser uma tabela ou consulta
     oFiltro.Filtro = txbFiltro.Text
-    
+
     f_Filtro.Show
-    
+
     txbFiltro.Text = oFiltro.Filtro
-    
+
     Call BuscaRegistros
-
-End Sub
-Private Sub lblFiltrar_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
-
-    With lblFiltrar.Font
-        .Underline = True
-        .Bold = True
-    End With
-
-End Sub
-Private Sub lblLimpar_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
-
-    With lblLimpar.Font
-        .Underline = True
-        .Bold = True
-    End With
 
 End Sub
 Private Sub MultiPage1_MouseMove(ByVal Index As Long, ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
 
-    With lblFiltrar.Font
-        .Underline = False
-        .Bold = False
-    End With
+    Dim oControle As MSForms.control
     
-    With lblLimpar.Font
-        .Underline = False
-        .Bold = False
-    End With
+    For Each oControle In Me.Controls
     
+        If TypeName(oControle) = "Label" Then
+        
+            If oControle.Tag = "Header" Then
+            
+                oControle.ForeColor = &H80000012
+            
+            ElseIf oControle.Tag = "Filtro" Then
+            
+                oControle.Font.Bold = False
+                oControle.Font.Underline = False
+            
+            End If
+        
+        End If
+    
+    Next
+
 End Sub
 Private Sub lblLimpar_Click()
     

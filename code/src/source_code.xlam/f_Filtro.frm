@@ -40,7 +40,7 @@ Private Sub cbbCamposPopular()
         
             .AddItem
             .List(.ListCount - 1, 0) = col.Properties.Item(2)
-            .List(.ListCount - 1, 1) = col.name
+            .List(.ListCount - 1, 1) = col.Name
             .List(.ListCount - 1, 2) = col.Type
         
         Next
@@ -152,7 +152,7 @@ Private Sub ConfiguraCampoExpressao()
     
     For Each oControle In Me.Controls
     
-        If TypeName(oControle) = "TextBox" And oControle.name = "txbExpressao" Then
+        If TypeName(oControle) = "TextBox" And oControle.Name = "txbExpressao" Then
         
             Set oEvento = New c_Evento
             

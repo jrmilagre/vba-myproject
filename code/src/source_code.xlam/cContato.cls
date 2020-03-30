@@ -18,6 +18,7 @@ Private Type TClass
     Salario    As Variant   ' Currency
     Sexo       As Variant   ' String
     Filtro     As String
+    Ordem      As String
 End Type
 
 Private This As TClass
@@ -44,9 +45,13 @@ Public Property Let Sexo(ByVal Value As Variant): This.Sexo = Value: End Propert
 Public Property Get Filtro() As String: Filtro = This.Filtro: End Property
 Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Property
 
+Public Property Get Ordem() As String: Ordem = This.Ordem: End Property
+Public Property Let Ordem(ByVal Value As String): This.Ordem = Value: End Property
 ' Métodos
 
 Public Sub CRUD(Acao As Integer, Optional ID As Long)
+
+    On Error GoTo err
     
     If ID > 0 Then
     
@@ -110,16 +115,20 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
     End If
     
     Set rst = Nothing
+    
+    Exit Sub
+    
+err:
+    MsgBox err.Description, vbCritical, "Erro!"
 
 End Sub
 Public Function Todos(Optional Ordem As String, Optional Filtro As String) As ADODB.Recordset
 
+    On Error GoTo err:
+
     sSQL = "SELECT * "
     sSQL = sSQL & "FROM tbl_contatos "
     
-'    sSQL = "SELECT nome, id, nascimento, salario "
-'    sSQL = sSQL & "FROM tbl_contatos "
-'    sSQL = sSQL & "WHERE nome LIKE ('%" & txbPesquisa.Text & "%') "
     If Filtro <> "" Then
         sSQL = sSQL & "WHERE " & Filtro & " "
     End If
@@ -127,8 +136,6 @@ Public Function Todos(Optional Ordem As String, Optional Filtro As String) As AD
     If Ordem <> "" Then
         sSQL = sSQL & "ORDER BY " & Ordem
     End If
-    
-
     
     Set Todos = New ADODB.Recordset
     
@@ -139,5 +146,10 @@ Public Function Todos(Optional Ordem As String, Optional Filtro As String) As AD
         .PageSize = 24
         .Open sSQL, cnn
     End With
+    
+    Exit Function
+    
+err:
+    MsgBox err.Description, vbCritical, "Erro!"
     
 End Function

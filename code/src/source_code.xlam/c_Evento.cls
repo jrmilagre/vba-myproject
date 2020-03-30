@@ -9,9 +9,9 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public WithEvents cTextBox  As MSForms.TextBox
+Public WithEvents cTextBox      As MSForms.TextBox
 Attribute cTextBox.VB_VarHelpID = -1
-Public WithEvents cLabel    As MSForms.Label
+Public WithEvents cLabel        As MSForms.Label
 Attribute cLabel.VB_VarHelpID = -1
 
 Private Type TProperty
@@ -19,6 +19,7 @@ Private Type TProperty
     Nullable    As Boolean
     MaxLength   As Integer
     Tag         As String
+    Name        As String
 End Type
 
 Private This As TProperty
@@ -35,6 +36,8 @@ Public Property Let MaxLength(ByVal Value As Integer): This.MaxLength = Value: E
 Public Property Get Tag() As String: Tag = This.Tag: End Property
 Public Property Let Tag(ByVal Value As String): This.Tag = Value: End Property
 
+Public Property Get Name() As String: Name = This.Name: End Property
+Public Property Let Name(ByVal Value As String): This.Name = Value: End Property
 'Public Function Evento(Controle As MSForms.control, Tabela As String) As Variant
 '
 '    If TypeName(Controle) = "TextBox" Then
@@ -162,27 +165,38 @@ Private Sub cTextBox_Exit()
         cTextBox.Text = Format(cTextBox.Text, "#,##0.00")
     End If
 End Sub
-Private Sub cCpf_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
-
-    cCpf.MaxLength = 14
+'Private Sub cCpf_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+'
+'    cCpf.MaxLength = 14
+'
+'    With cCpf
+'
+'    Select Case KeyAscii
+'            Case 8                      ' Aceita o BACK SPACE
+'            Case 13: SendKeys "{TAB}"   ' Emula o TAB
+'            Case 48 To 57
+'                If .SelStart = 3 Then .SelText = "."
+'                If .SelStart = 7 Then .SelText = "."
+'                If .SelStart = 11 Then .SelText = "-"
+'            Case Else: KeyAscii = 0     ' Ignora os outros caracteres
+'        End Select
+'    End With
+'
+'End Sub
+Private Sub cLabel_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     
-    With cCpf
-
-    Select Case KeyAscii
-            Case 8                      ' Aceita o BACK SPACE
-            Case 13: SendKeys "{TAB}"   ' Emula o TAB
-            Case 48 To 57
-                If .SelStart = 3 Then .SelText = "."
-                If .SelStart = 7 Then .SelText = "."
-                If .SelStart = 11 Then .SelText = "-"
-            Case Else: KeyAscii = 0     ' Ignora os outros caracteres
-        End Select
-    End With
-
-End Sub
-Private Sub cLabel_Click()
-
-    'Me.Tag = cLabel.Tag
+    If cLabel.Tag = "Filtro" Then
     
+        With cLabel.Font
+            .Underline = True
+            .Bold = True
+        End With
+        
+    ElseIf cLabel.Tag = "Header" Then
+    
+        cLabel.ForeColor = &H80000011
+    
+    End If
+
 End Sub
 

@@ -46,7 +46,7 @@ Public Function Conecta() As Boolean
     
 Erro:
     ' Mensagem caso a conexão com o banco de dados der problema
-    MsgBox "Banco de dados não existe ou não está acessível.", vbInformation
+    MsgBox "Banco de dados não existe ou não está acessível.", vbCritical
     
 End Function
 Public Sub Desconecta()

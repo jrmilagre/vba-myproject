@@ -14,7 +14,7 @@ Public Function GetCalculadora() As Double
     
     ' Atribui cada um dos botões em um elemento do vetor da classe
     For Each Ctrl In frm.Controls
-        If Ctrl.name Like "btnUsar" Then
+        If Ctrl.Name Like "btnUsar" Then
             lTotalBotoes = lTotalBotoes + 1
             ReDim Preserve aBotoes(1 To lTotalBotoes)
             Set aBotoes(lTotalBotoes).btnGrupo = Ctrl

@@ -18,7 +18,7 @@ Public Function GetCalendario() As Date
     
     ' Atribui cada um dos botões em um elemento do vetor da classe
     For Each Ctrl In frm.Controls
-        If Ctrl.name Like "l?c?" Then
+        If Ctrl.Name Like "l?c?" Then
             lTotalBotoes = lTotalBotoes + 1
             ReDim Preserve aBotoes(1 To lTotalBotoes)
             Set aBotoes(lTotalBotoes).btnGrupo = Ctrl
