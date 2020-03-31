@@ -15,7 +15,9 @@ Public Sub naAcaoBotao(control As IRibbonControl)
         On Error GoTo err
         
         Set frm = UserForms.Add(control.Tag)
+        
         frm.Show
+        
         Exit Sub
         
     End If

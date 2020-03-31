@@ -7,7 +7,6 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fContatos
    ClientWidth     =   9960
    OleObjectBlob   =   "fContatos.frx":0000
    StartUpPosition =   1  'CenterOwner
-   Tag             =   "tbl_contatos"
 End
 Attribute VB_Name = "fContatos"
 Attribute VB_GlobalNameSpace = False

@@ -14,7 +14,7 @@ Option Explicit
 Private Type TClass
     ID              As Long
     Conta           As String
-    SaldoInicial    As Saldo
+    SaldoInicial    As Currency
 
     Filtro          As String
     Ordem           As String
