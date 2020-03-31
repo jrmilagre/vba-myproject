@@ -9,22 +9,31 @@ Private oXML        As Object
 Public Sub naAcaoBotao(control As IRibbonControl)
 
     Dim frm As Object
+    
 
     If Conecta() = True Then
     
-        On Error GoTo err
+        On Error GoTo Erro
         
-        Set frm = UserForms.Add(control.Tag)
+        If Mid(control.Tag, 1, 1) = "f" Then
+            
+            Set frm = UserForms.Add(control.Tag)
         
-        frm.Show
+            frm.Show
+            
+        Else
+        
+            Application.Run control.Tag
+            
+        End If
         
         Exit Sub
         
     End If
     
-err:
+Erro:
     
-    MsgBox "Botão ainda não implementado", vbInformation
+    MsgBox "Botão ainda não implementado" & err.Description, vbInformation
 
 End Sub
 Sub ribbonLoaded(ribbon As IRibbonUI)

@@ -60,5 +60,31 @@ Public Function GetCorInfoCab() As String
     GetCorInfoCab = oXML.SelectSingleNode("//configuration/colors/@fonteCab").Value
 
 End Function
+Public Function GetCaminhoDicionario() As String
+    
+    Set oXML = CreateObject("MSXML2.DOMDocument")
+ 
+    With oXML
+        .async = False
+        .validateOnParse = False
+        .Load (Me.CaminhoXML)
+    End With
+
+    GetCaminhoDicionario = oXML.SelectSingleNode("//configuration/connectionString/@dicionario").Value
+
+End Function
+Public Function GetCaminhoBackup() As String
+    
+    Set oXML = CreateObject("MSXML2.DOMDocument")
+ 
+    With oXML
+        .async = False
+        .validateOnParse = False
+        .Load (Me.CaminhoXML)
+    End With
+
+    GetCaminhoBackup = oXML.SelectSingleNode("//configuration/connectionString/@backup").Value
+
+End Function
 
 

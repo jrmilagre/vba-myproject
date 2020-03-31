@@ -1,0 +1,59 @@
+table;field;type;size;nullable;autoincrement;description
+tbl_fornecedores;id;3;0;True;True;Código
+tbl_fornecedores;nome_fantasia;202;60;True;False;Nome fantasia
+tbl_fornecedores;razao_social;202;120;True;False;Razão social
+tbl_fornecedores;endereco;202;120;True;False;Endereço
+tbl_fornecedores;numero;202;15;True;False;Número
+tbl_fornecedores;bairro;202;60;True;False;Bairro
+tbl_fornecedores;cidade;202;60;True;False;Cidade
+tbl_fornecedores;estado;202;2;True;False;UF
+tbl_fornecedores;pais;202;60;True;False;País
+tbl_fornecedores;data_cadastro;7;0;True;False;Data do cadastro
+tbl_fornecedores;deletado;11;0;False;False;Deletado
+tbl_contas;id;3;0;True;True;Código
+tbl_contas;conta;202;50;True;False;Conta
+tbl_contas;saldo_inicial;6;0;True;False;Saldo inicial
+tbl_contas;data_cadastro;7;0;True;False;Data do cadastro
+tbl_contas;deletado;11;0;False;False;Deletado
+tbl_subcategorias;id;3;0;True;True;Código
+tbl_subcategorias;subcategoria;202;70;True;False;Subcategoria
+tbl_subcategorias;categoria_id;3;0;True;False;Código da categoria
+tbl_subcategorias;deletado;11;0;False;False;Deletado
+tbl_categorias;id;3;0;True;True;Código
+tbl_categorias;grupo;202;1;True;False;Grupo
+tbl_categorias;categoria;202;50;True;False;Categoria
+tbl_categorias;deletado;11;0;False;False;Deletado
+tbl_agendamentos;id;3;0;True;True;Código
+tbl_agendamentos;conta_id;3;0;True;False;Código da conta de origem
+tbl_agendamentos;contapara_id;3;0;True;False;Código da conta de destino
+tbl_agendamentos;subcategoria_id;3;0;True;False;Código da subcategoria
+tbl_agendamentos;fornecedor_id;3;0;True;False;Código do fornecedor
+tbl_agendamentos;grupo;202;1;True;False;Grupo
+tbl_agendamentos;recorrente;11;0;False;False;Recorrente
+tbl_agendamentos;infinito;11;0;False;False;Recorrente
+tbl_agendamentos;periodicidade;202;10;True;False;Periodicidade
+tbl_agendamentos;parcelas;3;0;True;False;Número de parcelas
+tbl_agendamentos;vencimento;7;0;True;False;Data do vencimento
+tbl_agendamentos;valor;6;0;True;False;Valor
+tbl_agendamentos;observacao;203;0;True;False;Observação
+tbl_agendamentos;parcelas_quitadas;3;0;True;False;Número de parcelas quitadas
+tbl_agendamentos;parcelas_restantes;3;0;True;False;Número de parcelas restantes
+tbl_agendamentos;intervalo;3;0;True;False;Intervalo
+tbl_agendamentos;deletado;11;0;False;False;Deletado
+tbl_transferencias;id;3;0;True;True;Código
+tbl_transferencias;data;7;0;True;False;Data
+tbl_transferencias;valor;6;0;True;False;Valor
+tbl_transferencias;movimentacaode_id;3;0;True;False;Código da conta de origem
+tbl_transferencias;movimentacaopara_id;3;0;True;False;Código da conta de destino
+tbl_movimentacoes;id;3;0;True;True;Código
+tbl_movimentacoes;agendamento_id;3;0;True;False;Código do agendamento
+tbl_movimentacoes;conta_id;3;0;True;False;Código da conta de origem
+tbl_movimentacoes;subcategoria_id;3;0;True;False;Código da subcategoria
+tbl_movimentacoes;fornecedor_id;3;0;True;False;Código do fornecedor
+tbl_movimentacoes;grupo;202;1;True;False;Grupo
+tbl_movimentacoes;liquidado;7;0;True;False;Data da liquidação
+tbl_movimentacoes;valor;6;0;True;False;Valor
+tbl_movimentacoes;origem;202;15;True;False;Origem
+tbl_movimentacoes;observacao;203;0;True;False;Observação
+tbl_movimentacoes;parcela;3;0;True;False;Número da parcela
+tbl_movimentacoes;transferencia_id;3;0;True;False;Código da transferência

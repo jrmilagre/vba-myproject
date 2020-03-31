@@ -4,6 +4,8 @@
 		nome="Producao"
 		provedor="Microsoft.Jet.OLEDB.4.0"
 		caminho="C:\temp\ws-vba\_project_model\data\banco.mdb"
+		dicionario="C:\temp\ws-vba\_project_model\update\date_dictionary.csv"
+		backup="C:\temp\ws-vba\_project_model\backup\banco.mdb"
 	>
 	</connectionString>
 	<colors

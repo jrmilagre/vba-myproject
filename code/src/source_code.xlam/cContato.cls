@@ -16,7 +16,7 @@ Private Type TClass
     Nome       As String
     Nascimento As Variant   ' Date
     Salario    As Variant   ' Currency
-    Sexo       As Variant   ' String
+    Genero     As Variant   ' String
     Filtro     As String
     Ordem      As String
 End Type
@@ -39,8 +39,8 @@ Public Property Let Nascimento(ByVal Value As Variant): This.Nascimento = Value:
 Public Property Get Salario() As Variant: Salario = This.Salario: End Property
 Public Property Let Salario(ByVal Value As Variant): This.Salario = Value: End Property
 
-Public Property Get Sexo() As Variant: Sexo = This.Sexo: End Property
-Public Property Let Sexo(ByVal Value As Variant): This.Sexo = Value: End Property
+Public Property Get Genero() As Variant: Genero = This.Genero: End Property
+Public Property Let Genero(ByVal Value As Variant): This.Genero = Value: End Property
 
 Public Property Get Filtro() As String: Filtro = This.Filtro: End Property
 Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Property
@@ -51,7 +51,7 @@ Public Property Let Ordem(ByVal Value As String): This.Ordem = Value: End Proper
 
 Public Sub CRUD(Acao As Integer, Optional ID As Long)
 
-    On Error GoTo err
+    On Error GoTo Erro
     
     If ID > 0 Then
     
@@ -61,7 +61,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
 
     Set rst = New ADODB.Recordset
     
-    If Acao = Read Then ' READ
+    If Acao = eCrud.Read Then ' READ
         
         With rst
         
@@ -71,15 +71,15 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             Me.Nome = .Fields("nome").Value
             If IsNull(.Fields("nascimento").Value) Then: Me.Nascimento = "": Else: Me.Nascimento = .Fields("nascimento").Value
             If IsNull(.Fields("salario").Value) Then: Me.Salario = 0: Else: Me.Salario = .Fields("salario").Value
-            If IsNull(.Fields("sexo").Value) Then: Me.Sexo = Null: Else: Me.Sexo = .Fields("sexo").Value
+            If IsNull(.Fields("genero").Value) Then: Me.Genero = Null: Else: Me.Genero = .Fields("genero").Value
             
         End With
         
-    ElseIf Acao = Create Or Acao = Update Then
+    ElseIf Acao = eCrud.Create Or Acao = eCrud.Update Then
         
         With rst
         
-            If Acao = Create Then
+            If Acao = eCrud.Create Then
             
                 .Open sTabela, cnn, adOpenDynamic, adLockOptimistic, adCmdTable
                 
@@ -87,7 +87,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
                 
                 Me.ID = .Fields("id").Value
                 
-            ElseIf Acao = Update Then
+            ElseIf Acao = eCrud.Update Then
             
                 .Open sSQL, cnn, adOpenDynamic, adLockOptimistic
                 
@@ -96,13 +96,13 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             .Fields("nome").Value = Me.Nome
             .Fields("nascimento").Value = Me.Nascimento
             .Fields("salario").Value = Me.Salario
-            .Fields("sexo").Value = Me.Sexo
+            .Fields("genero").Value = Me.Genero
             
             .Update
             
         End With
         
-    ElseIf Acao = Delete Then
+    ElseIf Acao = eCrud.Delete Then
     
         With rst
         
@@ -118,13 +118,14 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
     
     Exit Sub
     
-err:
+Erro:
+
     MsgBox err.Description, vbCritical, "Erro!"
 
 End Sub
 Public Function Todos(Optional Ordem As String, Optional Filtro As String) As ADODB.Recordset
 
-    On Error GoTo err:
+    On Error GoTo Erro:
 
     sSQL = "SELECT * "
     sSQL = sSQL & "FROM tbl_contatos "
@@ -149,7 +150,8 @@ Public Function Todos(Optional Ordem As String, Optional Filtro As String) As AD
     
     Exit Function
     
-err:
+Erro:
+
     MsgBox err.Description, vbCritical, "Erro!"
     
 End Function

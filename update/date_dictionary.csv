@@ -1,0 +1,9 @@
+table;field;type;size;nullable;autoincrement;description;primary_key;foreign_key
+tbl_contas;id;3;0;True;True;Código;True;False
+tbl_contas;conta;202;50;True;False;Conta;False;False
+tbl_contas;saldo_inicial;6;0;True;False;Saldo inicial;False;False
+tbl_contatos;id;3;0;True;True;Código;True;False
+tbl_contatos;nome;202;200;True;False;Nome;False;False
+tbl_contatos;nascimento;7;0;True;False;Nascimento;False;False
+tbl_contatos;salario;6;0;True;False;Salário;False;False
+tbl_contatos;genero;202;1;True;False;Genero;False;False

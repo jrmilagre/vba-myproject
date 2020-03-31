@@ -302,10 +302,10 @@ End Sub
 
 
 ' Assumes any component with same name has already been removed.
-Private Sub importComponent(vbaProject As VBProject, filePath As String)
-    Debug.Print "Importing component from  " & filePath
+Private Sub importComponent(vbaProject As VBProject, FilePath As String)
+    Debug.Print "Importing component from  " & FilePath
     'This next line is a bug! It imports all classes as modules!
-    vbaProject.VBComponents.Import filePath
+    vbaProject.VBComponents.Import FilePath
 End Sub
 
 
@@ -345,15 +345,15 @@ End Function
 
 ' Returns a reference to the workbook. Opens it if it is not already opened.
 ' Raises error if the file cannot be found.
-Public Function openWorkbook(ByVal filePath As String) As Workbook
+Public Function openWorkbook(ByVal FilePath As String) As Workbook
     Dim wb As Workbook
     Dim fileName As String
-    fileName = Dir(filePath)
+    fileName = Dir(FilePath)
     On Error Resume Next
     Set wb = Workbooks(fileName)
     On Error GoTo 0
     If wb Is Nothing Then
-        Set wb = Workbooks.Open(filePath) 'can raise error
+        Set wb = Workbooks.Open(FilePath) 'can raise error
     End If
     Set openWorkbook = wb
 End Function

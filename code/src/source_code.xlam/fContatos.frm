@@ -129,12 +129,12 @@ Private Sub lstPrincipal_Change()
             txbNascimento.Text = IIf(IsNull(.Nascimento), "", .Nascimento)
             txbSalario.Text = Format(.Salario, "#,##0.00")
             
-            If Not IsNull(.Sexo) Then
-                For n = 0 To cbbSexo.ListCount
-                    If cbbSexo.List(n, 1) = .Sexo Then: cbbSexo.ListIndex = n: Exit For
+            If Not IsNull(.Genero) Then
+                For n = 0 To cbbGenero.ListCount
+                    If cbbGenero.List(n, 1) = .Genero Then: cbbGenero.ListIndex = n: Exit For
                 Next n
             Else
-                cbbSexo.ListIndex = -1
+                cbbGenero.ListIndex = -1
             End If
             
         End With
@@ -162,7 +162,7 @@ Private Sub Campos(Acao As String)
         txbNome.Enabled = b: lblNome.Enabled = b
         txbNascimento.Enabled = b: lblNascimento.Enabled = b: btnNascimento.Enabled = b
         txbSalario.Enabled = b: lblSalario.Enabled = b: btnSalario.Enabled = b
-        cbbSexo.Enabled = b: lblSexo.Enabled = b
+        cbbGenero.Enabled = b: lblGenero.Enabled = b
         
     Else
     
@@ -171,7 +171,7 @@ Private Sub Campos(Acao As String)
         txbNome.Text = Empty
         txbNascimento.Text = IIf(sDecisao = "Inclusão", Date, Empty)
         txbSalario.Text = IIf(sDecisao = "Inclusão", Format(0, "#,##0.00"), "")
-        cbbSexo.ListIndex = -1
+        cbbGenero.ListIndex = -1
              
     End If
 
@@ -217,9 +217,9 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             ' Colore a legenda
             Set oLegenda = Controls("l" & Format(n, "00"))
             
-            If myRst.Fields("sexo").Value = "F" Then
+            If myRst.Fields("genero").Value = "F" Then
                 oLegenda.BackColor = &HFF80FF
-            ElseIf myRst.Fields("sexo").Value = "M" Then
+            ElseIf myRst.Fields("genero").Value = "M" Then
                 oLegenda.BackColor = &HFF8080
             Else
                 oLegenda.BackColor = &H8000000F
@@ -264,7 +264,7 @@ Private Sub Gravar(Decisao As String)
                     .Nome = txbNome.Text
                     If RTrim(txbNascimento.Text) = "" Then .Nascimento = Null Else .Nascimento = CDate(txbNascimento.Text)
                     If RTrim(txbSalario.Text) = "" Then .Salario = Null Else .Salario = CCur(txbSalario.Text)
-                    If cbbSexo.ListIndex = -1 Then .Sexo = Null Else .Sexo = cbbSexo.List(cbbSexo.ListIndex, 1)
+                    If cbbGenero.ListIndex = -1 Then .Genero = Null Else .Genero = cbbGenero.List(cbbGenero.ListIndex, 1)
                     
                     If Decisao = "Inclusão" Then
                         .CRUD eCrud.Create
@@ -540,7 +540,7 @@ Private Sub scrPagina_Change()
 End Sub
 Private Sub PopulaCombos()
 
-    With cbbSexo
+    With cbbGenero
         .Clear
         .ColumnCount = 2
         .ColumnWidths = "20pt; 0pt;"

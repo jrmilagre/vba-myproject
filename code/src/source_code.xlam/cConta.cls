@@ -44,7 +44,7 @@ Public Property Let Ordem(ByVal Value As String): This.Ordem = Value: End Proper
 
 Public Sub CRUD(Acao As Integer, Optional ID As Long)
 
-    On Error GoTo err
+    On Error GoTo Erro
     
     If ID > 0 Then
     
@@ -54,7 +54,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
 
     Set rst = New ADODB.Recordset
     
-    If Acao = Read Then ' READ
+    If Acao = eCrud.Read Then ' READ
         
         With rst
         
@@ -66,11 +66,11 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             
         End With
         
-    ElseIf Acao = Create Or Acao = Update Then
+    ElseIf Acao = eCrud.Create Or Acao = eCrud.Update Then
         
         With rst
         
-            If Acao = Create Then
+            If Acao = eCrud.Create Then
             
                 .Open sTabela, cnn, adOpenDynamic, adLockOptimistic, adCmdTable
                 
@@ -78,7 +78,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
                 
                 Me.ID = .Fields("id").Value
                 
-            ElseIf Acao = Update Then
+            ElseIf Acao = eCrud.Update Then
             
                 .Open sSQL, cnn, adOpenDynamic, adLockOptimistic
                 
@@ -92,7 +92,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             
         End With
         
-    ElseIf Acao = Delete Then
+    ElseIf Acao = eCrud.Delete Then
     
         With rst
         
@@ -108,13 +108,14 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
     
     Exit Sub
     
-err:
+Erro:
+
     MsgBox err.Description, vbCritical, "Erro!"
 
 End Sub
 Public Function Todos(Optional Ordem As String, Optional Filtro As String) As ADODB.Recordset
 
-    On Error GoTo err:
+    On Error GoTo Erro:
 
     sSQL = "SELECT * "
     sSQL = sSQL & "FROM tbl_contas "
@@ -139,7 +140,8 @@ Public Function Todos(Optional Ordem As String, Optional Filtro As String) As AD
     
     Exit Function
     
-err:
+Erro:
+
     MsgBox err.Description, vbCritical, "Erro!"
     
 End Function
