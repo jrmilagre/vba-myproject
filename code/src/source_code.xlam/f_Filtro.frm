@@ -16,6 +16,8 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private colEventos        As New Collection       ' Para eventos de campos
+Private adxTbl            As New ADOX.Table
+Private sTbl              As String
 
 Private Sub UserForm_Initialize()
     
@@ -26,24 +28,53 @@ Private Sub UserForm_Initialize()
 End Sub
 Private Sub cbbCamposPopular()
 
-    Dim tbl As ADOX.Table
-    Dim col As ADOX.Column
+    Dim col     As ADOX.Column
+    Dim c()     As String
     
-    Set tbl = cat.Tables(oFiltro.Tabela)
+    sTbl = oFiltro.Tabela
+    
+    Set adxTbl = cat.Tables(sTbl)
 
     With cbbCampo
         .Clear
-        .ColumnCount = 3
-        .ColumnWidths = "120pt; 0pt; 0pt;"
+        .ColumnCount = 4
+        .ColumnWidths = "120pt; 0pt; 0pt; 0pt;"
         
-        For Each col In tbl.Columns
+        ' COLUNAS
+        ' 1) - Nome da coluna no banco de dados
+        ' 2) - Apelido da coluna
+        ' 3) - Tipo da coluna
+        ' 4) - Tabela de origem
         
-            .AddItem
-            .List(.ListCount - 1, 0) = col.Properties.Item(2)
-            .List(.ListCount - 1, 1) = col.Name
-            .List(.ListCount - 1, 2) = col.Type
+        If adxTbl.Type = "TABLE" Then
+            
+            For Each col In adxTbl.Columns
         
-        Next
+                .AddItem
+            
+                .List(.ListCount - 1, 0) = col.Properties.Item(2)
+                .List(.ListCount - 1, 1) = col.Name
+                .List(.ListCount - 1, 2) = col.Type
+                .List(.ListCount - 1, 3) = adxTbl.Name
+                
+            Next
+            
+        ElseIf adxTbl.Type = "VIEW" Then
+            
+            For Each col In adxTbl.Columns
+
+                .AddItem
+
+                c() = Split(col.Name, "-")
+
+                .List(.ListCount - 1, 0) = cat.Tables(c(0)).Columns(c(1)).Properties.Item(2)
+                .List(.ListCount - 1, 1) = cat.Tables(c(0)).Columns(c(1)).Name
+                .List(.ListCount - 1, 2) = cat.Tables(c(0)).Columns(c(1)).Type
+                .List(.ListCount - 1, 3) = c(0)
+
+            Next
+            
+        End If
         
         cbbCampo.ListIndex = 0
         
@@ -145,10 +176,9 @@ Private Sub ConfiguraCampoExpressao()
     Dim oControle   As MSForms.control
     Dim oEvento     As c_Evento
     Dim sCampo      As String
-    Dim sTabela     As String
+    Dim c(0 To 1)   As String
     
     sCampo = cbbCampo.List(cbbCampo.ListIndex, 1)
-    sTabela = oFiltro.Tabela
     
     For Each oControle In Me.Controls
     
@@ -157,10 +187,23 @@ Private Sub ConfiguraCampoExpressao()
             Set oEvento = New c_Evento
             
             With oEvento
+            
+                If adxTbl.Type = "TABLE" Then
                     
-                .FieldType = cat.Tables(sTabela).Columns(sCampo).Type
-                .MaxLength = cat.Tables(sTabela).Columns(sCampo).DefinedSize
-                .Nullable = cat.Tables(sTabela).Columns(sCampo).Properties("Nullable")
+                    .FieldType = cat.Tables(sTbl).Columns(sCampo).Type
+                    .MaxLength = cat.Tables(sTbl).Columns(sCampo).DefinedSize
+                    .Nullable = cat.Tables(sTbl).Columns(sCampo).Properties("Nullable")
+                    
+                ElseIf adxTbl.Type = "VIEW" Then
+                
+                    c(0) = cbbCampo.List(cbbCampo.ListIndex, 1)
+                    c(1) = cbbCampo.List(cbbCampo.ListIndex, 3)
+                
+                    .FieldType = cat.Tables(c(1)).Columns(c(0)).Type
+                    .MaxLength = cat.Tables(c(1)).Columns(c(0)).DefinedSize
+                    .Nullable = cat.Tables(c(1)).Columns(c(0)).Properties("Nullable")
+                
+                End If
                     
                 Set .cTextBox = oControle
                 

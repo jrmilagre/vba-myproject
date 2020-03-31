@@ -531,7 +531,7 @@ Private Sub lblHdSaldoInicial_Click(): Call BuscaRegistros("saldo_inicial"): End
 
 Private Sub lblFiltrar_Click()
 
-    oFiltro.Tabela = "tbl_contas" ' Pode ser uma tabela ou consulta
+    oFiltro.Tabela = "vw_contas" ' Pode ser uma tabela ou consulta
     oFiltro.Filtro = txbFiltro.Text
 
     f_Filtro.Show
