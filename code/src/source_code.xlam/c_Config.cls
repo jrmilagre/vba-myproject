@@ -86,5 +86,17 @@ Public Function GetCaminhoBackup() As String
     GetCaminhoBackup = oXML.SelectSingleNode("//configuration/connectionString/@backup").Value
 
 End Function
+Public Function GetCaminhoConsultas() As String
+    
+    Set oXML = CreateObject("MSXML2.DOMDocument")
+ 
+    With oXML
+        .async = False
+        .validateOnParse = False
+        .Load (Me.CaminhoXML)
+    End With
 
+    GetCaminhoConsultas = oXML.SelectSingleNode("//configuration/connectionString/@consultas").Value
+
+End Function
 

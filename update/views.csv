@@ -1,0 +1,2 @@
+name;command
+vw_contas;SELECT tbl_contas.id AS [tbl_contas-id], tbl_contas.conta AS [tbl_contas-conta], tbl_contas.saldo_inicial AS [tbl_contas-saldo_inicial] FROM tbl_contas

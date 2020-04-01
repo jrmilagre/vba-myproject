@@ -290,6 +290,60 @@ Conecta:
     
     Close #1
     
+    ' CONSULTAS (VIEW)
+    Dim cmd As ADODB.Command
+    Dim vw  As ADOX.View
+    Dim bVw As Boolean
+    
+    FilePath = oConfig.GetCaminhoConsultas
+    
+    Open FilePath For Input As #1
+    
+    Do Until EOF(1)
+    
+        Line Input #1, sText
+    
+        ' Explode texto da linha pelo delimitador
+        myArray() = Split(sText, ";")
+        
+        If myArray(0) <> "name" Then
+        
+            bVw = False
+            
+            For Each vw In oCatalogo.Views
+            
+                If myArray(0) = vw.Name Then
+                    
+                    bVw = True
+                    
+                    Exit For
+                    
+                End If
+                
+            Next
+            
+            If bVw = False Then
+            
+                ' Instancia novo objeto ADODB.Command
+                Set cmd = New ADODB.Command
+            
+                ' Cria o comando representando a Consulta (View)
+                cmd.CommandText = myArray(1)
+            
+                ' Cria uma nova Consulta (View)
+                oCatalogo.Views.Append myArray(0), cmd
+                
+                ' Limpa objeto
+                Set cmd = Nothing
+                
+            End If
+            
+        End If
+    
+    Loop
+    
+    Close #1
+    
     Set oCatalogo = Nothing
     
     Call Desconecta
