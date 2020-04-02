@@ -18,6 +18,7 @@
 		<menu id="smFPE-Cadastros" image="cadastros" label="Cadastros">
 			<button id="smFPE-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
 			<button id="smFPE-Cadastros-Contas" imageMso="AppointmentColorDialog" label="Contas" onAction="naAcaoBotao" tag="fContas"/>
+			<button id="smFPE-Cadastros-Categorias" imageMso="AppointmentColorDialog" label="Categorias" onAction="naAcaoBotao" tag="fCategorias"/>
 		</menu>
 	</menu>	
 

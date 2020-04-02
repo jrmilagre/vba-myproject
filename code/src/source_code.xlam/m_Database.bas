@@ -283,8 +283,18 @@ Conecta:
                 Set oCampo = Nothing
                 
             End If
+            
+            If myArray(0) = "tbl_dfc" And myArray(1) = "sequencia" And bExisteCampo = False Then
+        
+                Call PopulaTblDFC
+            
+            End If
         
         End If
+        
+        ' Se estiver sendo criado o último campo da tabela tbl_dfc,
+        ' inclui os dados permanentemente na tabela
+
     
     Loop
     
@@ -472,5 +482,26 @@ Public Sub IncluiRegistrosTeste()
         Call Desconecta
     End If
     
+End Sub
+Private Sub PopulaTblDFC()
+
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (1, '(+) Receita bruta', 0, 1) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (2, '(-) Caixa dispendido na revenda', 0, 2) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (3, 'A) CAIXA BRUTO OBTIDO NAS OPERAÇÕES', 1, 3) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (4, '(-) Despesas com vendas', 0, 4) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (5, '(-) Despesas administrativas', 0, 5) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (6, 'B) CAIXA GERADO NOS NEGÓCIOS', 1, 6) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (7, '(+) Receitas financeiras', 0, 7) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (8, '(-) Despesas financeiras', 0, 8) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (9, 'C) CAIXA LÍQUIDO APÓS FATOS NÃO OPERACIONAIS', 1, 9) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (10, '(-) Juros sobre empréstimos', 0, 10) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (11, 'D) CAIXA LÍQUIDO APÓS REMUNERAÇÃO DO CAPITAL', 1, 11) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (12, '(-) Capital de empréstimo pago', 0, 12) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (13, 'E) CAIXA APÓS AMORTIZAÇÃO DE EMPRÉSTIMOS', 1, 13) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (14, '(+) Aquisição de empréstimo', 0, 14) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (15, 'F) CAIXA APÓS NOVAS FONTES DE RECURSOS', 1, 15) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (16, '(-) Aquisição de permanentes', 0, 16) ": cnn.Execute sSQL
+    sSQL = "INSERT INTO tbl_dfc ([id], [grupo], [subtotal], [sequencia]) VALUES (17, 'G) CAIXA LÍQUIDO', 1, 17) ": cnn.Execute sSQL
+ 
 End Sub
 

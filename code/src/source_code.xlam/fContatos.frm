@@ -370,32 +370,32 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     
     If Ordem <> "" Then
     
-        If oContato.Ordem <> "" Then
+        If oFiltro.Ordem <> "" Then
     
-            a() = Split(oContato.Ordem, " ")
+            a() = Split(oFiltro.Ordem, " ")
             
-            sOrdem = oContato.Ordem
+            sOrdem = oFiltro.Ordem
             
             If Ordem = a(0) Then
                 
                 If a(1) = "ASC" Then
                     Ordem = Ordem & " DESC"
-                    oContato.Ordem = Ordem
+                    oFiltro.Ordem = Ordem
                 Else
                     Ordem = Ordem & " ASC"
-                    oContato.Ordem = Ordem
+                    oFiltro.Ordem = Ordem
                 End If
             Else
                 
                 Ordem = Ordem & " ASC"
-                oContato.Ordem = Ordem
+                oFiltro.Ordem = Ordem
             
             End If
             
         Else
         
             Ordem = Ordem & " ASC"
-            oContato.Ordem = Ordem
+            oFiltro.Ordem = Ordem
         
         End If
     

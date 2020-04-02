@@ -17,8 +17,6 @@ Private Type TClass
     Nascimento As Variant   ' Date
     Salario    As Variant   ' Currency
     Genero     As Variant   ' String
-    Filtro     As String
-    Ordem      As String
 End Type
 
 Private This As TClass
@@ -42,11 +40,6 @@ Public Property Let Salario(ByVal Value As Variant): This.Salario = Value: End P
 Public Property Get Genero() As Variant: Genero = This.Genero: End Property
 Public Property Let Genero(ByVal Value As Variant): This.Genero = Value: End Property
 
-Public Property Get Filtro() As String: Filtro = This.Filtro: End Property
-Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Property
-
-Public Property Get Ordem() As String: Ordem = This.Ordem: End Property
-Public Property Let Ordem(ByVal Value As String): This.Ordem = Value: End Property
 ' Métodos
 
 Public Sub CRUD(Acao As Integer, Optional ID As Long)

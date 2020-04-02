@@ -1,18 +1,19 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fContas 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fDFC 
    Caption         =   ":: Cadastro de Contas ::"
    ClientHeight    =   9195
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9960
-   OleObjectBlob   =   "fContas.frx":0000
+   OleObjectBlob   =   "fDFC.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
-Attribute VB_Name = "fContas"
+Attribute VB_Name = "fDFC"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 Option Explicit
 
 Private oConta              As New cConta
@@ -344,36 +345,36 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     Dim sOrdem  As String
     Dim a()     As String
 
-    On Error GoTo Erro
+    On Error GoTo err
     
     If Ordem <> "" Then
     
-        If oFiltro.Ordem <> "" Then
+        If oConta.Ordem <> "" Then
     
-            a() = Split(oFiltro.Ordem, " ")
+            a() = Split(oConta.Ordem, " ")
             
-            sOrdem = oFiltro.Ordem
+            sOrdem = oConta.Ordem
             
             If Ordem = a(0) Then
                 
                 If a(1) = "ASC" Then
                     Ordem = Ordem & " DESC"
-                    oFiltro.Ordem = Ordem
+                    oConta.Ordem = Ordem
                 Else
                     Ordem = Ordem & " ASC"
-                    oFiltro.Ordem = Ordem
+                    oConta.Ordem = Ordem
                 End If
             Else
                 
                 Ordem = Ordem & " ASC"
-                oFiltro.Ordem = Ordem
+                oConta.Ordem = Ordem
             
             End If
             
         Else
         
             Ordem = Ordem & " ASC"
-            oFiltro.Ordem = Ordem
+            oConta.Ordem = Ordem
         
         End If
     
@@ -402,8 +403,7 @@ Private Sub BuscaRegistros(Optional Ordem As String)
         
     End If
     
-Erro:
-
+err:
     Call btnCancelar_Click
     
 End Sub

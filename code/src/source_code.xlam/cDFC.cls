@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "cConta"
+Attribute VB_Name = "cDFC"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -13,25 +13,37 @@ Option Explicit
 
 Private Type TClass
     ID              As Long
-    Conta           As String
-    SaldoInicial    As Currency
+    Grupo           As String
+    Subtotal        As Boolean
+    Sequencia       As Integer
+
+    Filtro          As String
+    Ordem           As String
 End Type
 
 Private This As TClass
 
-Private Const sTabela As String = "tbl_contas"
+Private Const sTabela As String = "tbl_dfc"
 
 ' Propriedades
 
 Public Property Get ID() As Long: ID = This.ID: End Property
 Public Property Let ID(ByVal Value As Long): This.ID = CLng(Value): End Property
 
-Public Property Get Conta() As String: Conta = This.Conta: End Property
-Public Property Let Conta(ByVal Value As String): This.Conta = Value: End Property
+Public Property Get Grupo() As String: Grupo = This.Grupo: End Property
+Public Property Let Grupo(ByVal Value As String): This.Grupo = Value: End Property
 
-Public Property Get SaldoInicial() As Currency: SaldoInicial = This.SaldoInicial: End Property
-Public Property Let SaldoInicial(ByVal Value As Currency): This.SaldoInicial = Value: End Property
+Public Property Get Subtotal() As Boolean: Subtotal = This.Subtotal: End Property
+Public Property Let Subtotal(ByVal Value As Boolean): This.Subtotal = Value: End Property
 
+Public Property Get Sequencia() As Integer: Sequencia = This.Sequencia: End Property
+Public Property Let Sequencia(ByVal Value As Integer): This.Sequencia = Value: End Property
+
+Public Property Get Filtro() As String: Filtro = This.Filtro: End Property
+Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Property
+
+Public Property Get Ordem() As String: Ordem = This.Ordem: End Property
+Public Property Let Ordem(ByVal Value As String): This.Ordem = Value: End Property
 ' Métodos
 
 Public Sub CRUD(Acao As Integer, Optional ID As Long)
@@ -53,8 +65,9 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             .Open sSQL, cnn, adOpenStatic, adLockReadOnly
         
             Me.ID = .Fields("id").Value
-            Me.Conta = .Fields("conta").Value
-            Me.SaldoInicial = .Fields("saldo_inicial").Value
+            Me.Grupo = .Fields("grupo").Value
+            Me.Subtotal = .Fields("subtotal").Value
+            Me.Sequencia = .Fields("sequencia").Value
             
         End With
         
@@ -76,10 +89,10 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
                 
             End If
             
-            .Fields("conta").Value = Me.Conta
-            .Fields("saldo_inicial").Value = Me.SaldoInicial
+            .Fields("grupo").Value = Me.Grupo
+            .Fields("subtotal").Value = Me.Subtotal
+            .Fields("sequencia").Value = Me.Sequencia
 
-            
             .Update
             
         End With
@@ -110,7 +123,7 @@ Public Function Todos(Optional Ordem As String, Optional Filtro As String) As AD
     On Error GoTo Erro:
 
     sSQL = "SELECT * "
-    sSQL = sSQL & "FROM tbl_contas "
+    sSQL = sSQL & "FROM tbl_dfc "
     
     If Filtro <> "" Then
         sSQL = sSQL & "WHERE " & Filtro & " "

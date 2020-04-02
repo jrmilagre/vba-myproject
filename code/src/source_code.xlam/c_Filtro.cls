@@ -13,6 +13,7 @@ Option Explicit
 Private Type TClass
     Tabela     As String
     Filtro     As String
+    Ordem      As String
 End Type
 
 Private This As TClass
@@ -24,4 +25,7 @@ Public Property Let Tabela(ByVal Value As String): This.Tabela = Value: End Prop
 
 Public Property Get Filtro() As String: Filtro = This.Filtro: End Property
 Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Property
+
+Public Property Get Ordem() As String: Ordem = This.Ordem: End Property
+Public Property Let Ordem(ByVal Value As String): This.Ordem = Value: End Property
 

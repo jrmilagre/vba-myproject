@@ -1,46 +1,48 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fContas 
-   Caption         =   ":: Cadastro de Contas ::"
-   ClientHeight    =   9195
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fCategorias 
+   Caption         =   ":: Cadastro de Categorias ::"
+   ClientHeight    =   9105
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   9960
-   OleObjectBlob   =   "fContas.frx":0000
+   ClientWidth     =   11655
+   OleObjectBlob   =   "fCategorias.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
-Attribute VB_Name = "fContas"
+Attribute VB_Name = "fCategorias"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private oConta              As New cConta
-Private colControles        As New Collection       ' Para eventos de campos
+Private oCategoria          As New cCategoria
+Private colControles        As New Collection           ' Para atribuir eventos aos campos
 Private myRst               As New ADODB.Recordset
 Private bAtualizaScrool     As Boolean
-
 Private Sub UserForm_Initialize()
-    
-    'Call PopulaCombos
+
+    Call PopulaCombos
     
     Call Eventos
     
     Call BuscaRegistros
 
 End Sub
-
 Private Sub UserForm_Terminate()
     
-    Set oConta = Nothing
+    Set oCategoria = Nothing
     Set myRst = Nothing
     
     Call Desconecta
     
 End Sub
-Private Sub btnSaldoInicial_Click()
-    ccurVisor = IIf(txbSaldoInicial.Text = "", 0, CCur(txbSaldoInicial.Text))
-    txbSaldoInicial.Text = Format(GetCalculadora, "#,##0.00")
+Private Sub btnSalario_Click()
+    ccurVisor = IIf(txbSalario.Text = "", 0, CCur(txbSalario.Text))
+    txbSalario.Text = Format(GetCalculadora, "#,##0.00")
+End Sub
+Private Sub btnNascimento_Click()
+    dtDate = IIf(txbNascimento.Text = Empty, Date, txbNascimento.Text)
+    txbNascimento.Text = GetCalendario
 End Sub
 Private Sub btnIncluir_Click()
     
@@ -77,7 +79,7 @@ Private Sub PosDecisaoTomada(Decisao As String)
         
         Call Campos("Habilitar")
         
-        txbConta.SetFocus
+        txbCategoria.SetFocus
         
     End If
     
@@ -108,22 +110,39 @@ Private Sub btnCancelar_Click()
 End Sub
 Private Sub lstPrincipal_Change()
 
-    Dim n As Long
+    Dim n           As Long
+    Dim oControl    As control
     
     If lstPrincipal.ListIndex >= 0 Then
     
         btnAlterar.Enabled = True
         btnExcluir.Enabled = True
     
-        With oConta
+        With oCategoria
     
             .CRUD eCrud.Read, (CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0)))
     
-            lblCabID.Caption = IIf(.ID = 0, "", .ID)
-            lblCabConta.Caption = .Conta
-            lblCabSaldoInicial.Caption = Format(.SaldoInicial, "#,##0.00")
-            txbConta.Text = .Conta
-            txbSaldoInicial.Text = Format(.SaldoInicial, "#,##0.00")
+            lblCabID.Caption = IIf(.ID = 0, "", Format(.ID, "000000"))
+            lblCabCategoria.Caption = .Categoria
+            lblCabSubcategoria.Caption = .Subcategoria
+            lblCabGrupo.Caption = IIf(.Grupo = "R", "RECEITA", "DESPESA")
+            txbCategoria.Text = .Categoria
+            txbSubcategoria.Text = .Subcategoria
+            
+            For n = 0 To cbbGrupo.ListCount - 1
+                If .Grupo = cbbGrupo.List(n, 0) Then
+                    cbbGrupo.ListIndex = n
+                    Exit For
+                End If
+            Next n
+            
+            For n = 1 To 10
+            
+                Set oControl = Controls("opt" & Format(n, "00"))
+                
+                If oControl.Tag = .DfcID Then oControl.Value = True
+            
+            Next n
             
         End With
         
@@ -134,6 +153,8 @@ Private Sub Campos(Acao As String)
     
     Dim sDecisao    As String
     Dim b           As Boolean
+    Dim oControl    As control
+    Dim n           As Integer
     
     sDecisao = Replace(btnConfirmar.Caption, "Confirmar ", "")
     
@@ -147,17 +168,35 @@ Private Sub Campos(Acao As String)
         
         MultiPage1.Pages(0).Enabled = Not b
         
-        txbConta.Enabled = b: lblConta.Enabled = b
-        txbSaldoInicial.Enabled = b: lblSaldoInicial.Enabled = b: btnSaldoInicial.Enabled = b
+        txbCategoria.Enabled = b: lblCategoria.Enabled = b
+        txbSubcategoria.Enabled = b: lblSubcategoria.Enabled = b
+        cbbGrupo.Enabled = b: lblGrupo.Enabled = b
+        btnLimparSelecao.Enabled = b
+        lblOperacional.Enabled = b
+        lblTatico.Enabled = b
+        lblEstrategico.Enabled = b
+        
+        For n = 1 To 10
+            
+            Set oControl = Controls("opt" & Format(n, "00")): oControl.Enabled = b
+            
+        Next n
+        
+        frmDFC.Enabled = b
         
     Else
     
         lblCabID.Caption = ""
-        lblCabConta.Caption = ""
-        lblCabSaldoInicial.Caption = ""
+        lblCabCategoria.Caption = ""
+        txbCategoria.Text = Empty
+        txbSubcategoria.Text = Empty
+        cbbGrupo.ListIndex = -1
         
-        txbConta.Text = Empty
-        txbSaldoInicial.Text = IIf(sDecisao = "Inclusão", Format(0, "#,##0.00"), "")
+        For n = 1 To 10
+            
+            Set oControl = Controls("opt" & Format(n, "00")): oControl.Value = False
+            
+        Next n
              
     End If
 
@@ -165,7 +204,8 @@ End Sub
 Private Sub lstPrincipalPopular(Pagina As Long)
 
     Dim n           As Byte
-    Dim oLegenda    As control
+    Dim oLegenda     As control
+    Dim vDFC        As Variant
     
     ' Limpa cores da legenda
     For n = 1 To myRst.PageSize
@@ -176,10 +216,10 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     myRst.AbsolutePage = Pagina
     
     With lstPrincipal
-        .Clear                                      ' Limpa conteúdo
-        .ColumnCount = 3                            ' Define número de colunas
-        .ColumnWidths = "40pt; 180 pt; 75pt;"       ' Configura largura das colunas
-        .Font = "Consolas"                          ' Configura fonte
+        .Clear                                              ' Limpa conteúdo
+        .ColumnCount = 5                                    ' Define número de colunas
+        .ColumnWidths = "40 pt; 152pt; 152pt; 55pt; 60pt;"  ' Configura largura das colunas
+        .Font = "Consolas"                                  ' Configura fonte
         
         n = 1
         
@@ -189,19 +229,34 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             .AddItem
             
             .List(.ListCount - 1, 0) = myRst.Fields("id").Value
-            .List(.ListCount - 1, 1) = myRst.Fields("conta").Value
-            .List(.ListCount - 1, 2) = Space(15 - Len(Format(myRst.Fields("saldo_inicial").Value, "#,##0.00"))) & Format(myRst.Fields("saldo_inicial").Value, "#,##0.00")
+            .List(.ListCount - 1, 1) = myRst.Fields("categoria").Value
+            .List(.ListCount - 1, 2) = myRst.Fields("subcategoria").Value
+            .List(.ListCount - 1, 3) = IIf(myRst.Fields("grupo").Value = "R", "RECEITA", "DESPESA")
+            
+            If IsNull(myRst.Fields("dfc_id").Value) Then
+                vDFC = "<não-atribuído>"
+            Else
+                vDFC = oCategoria.GetDFC(myRst.Fields("dfc_id").Value)
+            End If
+            
+            .List(.ListCount - 1, 4) = vDFC
+            
+            'If IsNull(myRst.Fields("nascimento").Value) Then vNascimento = "--/--/----" Else vNascimento = myRst.Fields("nascimento").Value
+            'If IsNull(myRst.Fields("salario").Value) Then vSalario = 0 Else vSalario = myRst.Fields("salario").Value
+            
+            '.List(.ListCount - 1, 2) = vNascimento
+            '.List(.ListCount - 1, 3) = Space(12 - Len(Format(vSalario, "#,##0.00"))) & Format(vSalario, "#,##0.00")
             
             ' Colore a legenda
-'            Set oLegenda = Controls("l" & Format(n, "00"))
-'
-'            If myRst.Fields("sexo").Value = "F" Then
-'                oLegenda.BackColor = &HFF80FF
-'            ElseIf myRst.Fields("sexo").Value = "M" Then
-'                oLegenda.BackColor = &HFF8080
-'            Else
-'                oLegenda.BackColor = &H8000000F
-'            End If
+            Set oLegenda = Controls("l" & Format(n, "00"))
+            
+            If myRst.Fields("grupo").Value = "D" Then
+                oLegenda.BackColor = &HFF& 'Vermelho
+            ElseIf myRst.Fields("grupo").Value = "R" Then
+                oLegenda.BackColor = &HFF0000 ' Azul
+            Else
+                oLegenda.BackColor = &H8000000F 'Cinza (sem cor)
+            End If
             
             ' Próximo registro
             myRst.MoveNext: n = n + 1
@@ -224,8 +279,9 @@ Private Sub Gravar(Decisao As String)
 
     Dim vbResposta  As VbMsgBoxResult
     Dim e           As eCrud
-    
-    On Error GoTo err
+    Dim n           As Integer
+    Dim oControl    As control
+    Dim optButton   As Boolean
     
     vbResposta = MsgBox("Deseja realmente fazer a " & Decisao & "?", vbYesNo + vbQuestion, "Pergunta")
     
@@ -233,34 +289,63 @@ Private Sub Gravar(Decisao As String)
     
         If Decisao <> "Exclusão" Then
         
-            If txbConta.Text = Empty Then
-                MsgBox "Campo 'Conta' é obrigatório", vbCritical: MultiPage1.Value = 1: txbConta.SetFocus
-            ElseIf txbSaldoInicial.Text = "" Then
-                MsgBox "Campo 'Saldo inicial' é obrigatório", vbCritical: MultiPage1.Value = 1: txbSaldoInicial.SetFocus
+            If txbCategoria.Text = Empty Then
+                MsgBox "Campo 'Categoria' é obrigatório", vbCritical: MultiPage1.Value = 1: txbCategoria.SetFocus
+            ElseIf txbSubcategoria.Text = Empty Then
+                MsgBox "Campo 'Subcategoria' é obrigatório", vbCritical: MultiPage1.Value = 1: txbSubcategoria.SetFocus
+            ElseIf cbbGrupo.ListIndex = -1 Then
+                MsgBox "Campo 'Grupo' é obrigatório", vbCritical: MultiPage1.Value = 1: txbSubcategoria.SetFocus
             Else
+            
+                optButton = False
                 
-                With oConta
+                For n = 1 To 10
+                
+                    Set oControl = Controls("opt" & Format(n, "00"))
                     
-                    .Conta = txbConta.Text
-                    .SaldoInicial = CCur(txbSaldoInicial.Text)
+                    If oControl.Value = True Then
+                        
+                        optButton = True
+                        
+                        oCategoria.DfcID = oControl.Tag
+                        
+                        Exit For
+                        
+                    End If
+                        
+                Next n
+                
+                If optButton = False Then
+                
+                    oCategoria.DfcID = Null
                     
+                End If
+                
+                With oCategoria
+                
+                    .Categoria = txbCategoria.Text
+                    .Subcategoria = txbSubcategoria.Text
+                    .Grupo = cbbGrupo.List(cbbGrupo.ListIndex, 0)
+                
                     If Decisao = "Inclusão" Then
                         .CRUD eCrud.Create
                     Else
                         .CRUD eCrud.Update, .ID
                     End If
-                    
+                
                 End With
-                
+            
                 MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
-                
+            
                 Call BuscaRegistros
-                                    
+                
+                
+                              
             End If
         
         Else ' Se for exclusão
         
-            oConta.CRUD eCrud.Delete, oConta.ID
+            oCategoria.CRUD eCrud.Delete, oCategoria.ID
                 
             MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
             
@@ -269,8 +354,7 @@ Private Sub Gravar(Decisao As String)
         End If
                
     ElseIf vbResposta = vbNo Then
-    
-err:
+        
         If Decisao = "Exclusão" Then
             
             Call btnCancelar_Click
@@ -339,8 +423,8 @@ Private Sub Eventos()
 End Sub
 Private Sub BuscaRegistros(Optional Ordem As String)
 
-    Dim n       As Byte
-    Dim o       As control
+    Dim n As Byte
+    Dim o As control
     Dim sOrdem  As String
     Dim a()     As String
 
@@ -378,8 +462,8 @@ Private Sub BuscaRegistros(Optional Ordem As String)
         End If
     
     End If
-    
-    Set myRst = oConta.Todos(Ordem, txbFiltro.Text)
+
+    Set myRst = oCategoria.Todos(Ordem, txbFiltro.Text)
     
     If myRst.PageCount > 0 Then
         
@@ -519,20 +603,43 @@ Private Sub scrPagina_Change()
 End Sub
 Private Sub PopulaCombos()
 
+    ' Carrega combo Grupos
+    Dim col As Collection
+    Dim n   As Variant
+    Dim s() As String
+    
+    Set col = oCategoria.GetGrupos
+    
+    With cbbGrupo
+        .Clear
+        .ColumnCount = 2
+        .ColumnWidths = "15pt;30pt;"
+        
+        For Each n In col
+        
+            s() = Split(n, ",")
+            
+                .AddItem
+                .List(.ListCount - 1, 0) = s(1)
+                .List(.ListCount - 1, 1) = s(0)
+        Next n
+    
+    End With
+    
 End Sub
 Private Sub lstPrincipal_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 
     MultiPage1.Value = 1
     
 End Sub
+Private Sub lblHdNome_Click()
 
-Private Sub lblHdCodigo_Click(): Call BuscaRegistros("id"): End Sub
-Private Sub lblHdConta_Click(): Call BuscaRegistros("conta"): End Sub
-Private Sub lblHdSaldoInicial_Click(): Call BuscaRegistros("saldo_inicial"): End Sub
-
+    Call BuscaRegistros("nome")
+    
+End Sub
 Private Sub lblFiltrar_Click()
 
-    oFiltro.Tabela = "vw_contas" ' Pode ser uma tabela ou consulta
+    oFiltro.Tabela = "tbl_categorias" ' Pode ser uma tabela ou consulta
     oFiltro.Filtro = txbFiltro.Text
 
     f_Filtro.Show
@@ -573,3 +680,21 @@ Private Sub lblLimpar_Click()
     Call BuscaRegistros
 
 End Sub
+Private Sub btnLimparSelecao_Click()
+
+    Dim n           As Integer
+    Dim oControl    As control
+
+    For n = 1 To 10
+    
+        Set oControl = Controls("opt" & Format(n, "00"))
+        
+        oControl.Value = False
+            
+    Next n
+
+End Sub
+Private Sub lblHdCodigo_Click(): Call BuscaRegistros("id"): End Sub
+Private Sub lblHdCategoria_Click(): Call BuscaRegistros("categoria"): End Sub
+Private Sub lblHdSubcategoria_Click(): Call BuscaRegistros("subcategoria"): End Sub
+Private Sub lblHdGrupo_Click(): Call BuscaRegistros("grupo"): End Sub
