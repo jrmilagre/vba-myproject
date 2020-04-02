@@ -165,11 +165,13 @@ End Sub
 Private Sub lstPrincipalPopular(Pagina As Long)
 
     Dim n           As Byte
-    Dim oLegenda    As control
+    Dim oControle   As control
+    Dim s()         As String
+    Dim vLegenda    As Variant
     
     ' Limpa cores da legenda
     For n = 1 To myRst.PageSize
-        Set oLegenda = Controls("l" & Format(n, "00")): oLegenda.BackColor = &H8000000F
+        Set oControle = Controls("l" & Format(n, "00")): oControle.BackColor = &H8000000F
     Next n
 
     ' Define página que será exibida do Recordset
@@ -193,15 +195,26 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             .List(.ListCount - 1, 2) = Space(15 - Len(Format(myRst.Fields("saldo_inicial").Value, "#,##0.00"))) & Format(myRst.Fields("saldo_inicial").Value, "#,##0.00")
             
             ' Colore a legenda
-'            Set oLegenda = Controls("l" & Format(n, "00"))
+            
+            ' Define o rótulo que receberá a cor
+            Set oControle = Controls("l" & Format(n, "00"))
+            
+            ' Laço para ler cores armazenadas na coleção de legendas da classe
+            If oLegenda.Count > 0 Then
+            
+                For Each vLegenda In oLegenda
+                    
+'                    s() = Split(vLegenda, ";")
 '
-'            If myRst.Fields("sexo").Value = "F" Then
-'                oLegenda.BackColor = &HFF80FF
-'            ElseIf myRst.Fields("sexo").Value = "M" Then
-'                oLegenda.BackColor = &HFF8080
-'            Else
-'                oLegenda.BackColor = &H8000000F
-'            End If
+'                    If myRst.Fields("genero").Value = s(0) Then
+'
+'                        oControle.BackColor = s(2): Exit For
+'
+'                    End If
+                    
+                Next
+                
+            End If
             
             ' Próximo registro
             myRst.MoveNext: n = n + 1

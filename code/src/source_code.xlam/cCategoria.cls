@@ -163,3 +163,13 @@ Public Function GetGrupos() As Collection
     Set GetGrupos = col
 
 End Function
+Public Function GetLegendas() As Collection
+
+    Dim col As New Collection
+    
+    col.Add "R;Receitas;&HFF0000"
+    col.Add "D;Despesas;&HFF"
+    
+    Set GetLegendas = col
+
+End Function

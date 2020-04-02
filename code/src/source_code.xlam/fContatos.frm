@@ -181,12 +181,17 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     Dim n           As Byte
     Dim vNascimento As Variant
     Dim vSalario    As Variant
-    Dim oLegenda    As control
+    Dim oControle   As control
+    Dim s()         As String
+    Dim vLegenda    As Variant
     
     ' Limpa cores da legenda
     For n = 1 To myRst.PageSize
-        Set oLegenda = Controls("l" & Format(n, "00")): oLegenda.BackColor = &H8000000F
+        Set oControle = Controls("l" & Format(n, "00")): oControle.BackColor = &H8000000F
     Next n
+    
+    ' Carrega coleção de cores da legenda
+    Set oLegenda = oContato.GetLegendas
 
     ' Define página que será exibida do Recordset
     myRst.AbsolutePage = Pagina
@@ -212,17 +217,28 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             If IsNull(myRst.Fields("salario").Value) Then vSalario = 0 Else vSalario = myRst.Fields("salario").Value
             
             .List(.ListCount - 1, 2) = vNascimento
-            .List(.ListCount - 1, 3) = Space(12 - Len(Format(vSalario, "#,##0.00"))) & Format(vSalario, "#,##0.00")
+            .List(.ListCount - 1, 3) = Space(ESPACO_ANTES_VALOR - Len(Format(vSalario, "#,##0.00"))) & Format(vSalario, "#,##0.00")
             
             ' Colore a legenda
-            Set oLegenda = Controls("l" & Format(n, "00"))
             
-            If myRst.Fields("genero").Value = "F" Then
-                oLegenda.BackColor = &HFF80FF
-            ElseIf myRst.Fields("genero").Value = "M" Then
-                oLegenda.BackColor = &HFF8080
-            Else
-                oLegenda.BackColor = &H8000000F
+            ' Define o rótulo que receberá a cor
+            Set oControle = Controls("l" & Format(n, "00"))
+            
+            ' Laço para ler cores armazenadas na coleção de legendas da classe
+            If oLegenda.Count > 0 Then
+            
+                For Each vLegenda In oLegenda
+                    
+                    s() = Split(vLegenda, ";")
+                    
+                    If myRst.Fields("genero").Value = s(0) Then
+                    
+                        oControle.BackColor = s(2): Exit For
+                        
+                    End If
+                    
+                Next
+                
             End If
             
             ' Próximo registro
@@ -609,4 +625,12 @@ Private Sub lblLimpar_Click()
     Call BuscaRegistros
 
 End Sub
+Private Sub lblLegenda_Click()
+    
+    Set oLegenda = New Collection
+    
+    Set oLegenda = oContato.GetLegendas
+    
+    f_Legenda.Show
 
+End Sub

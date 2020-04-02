@@ -1,6 +1,6 @@
 <menu xmlns="http://schemas.microsoft.com/office/2006/01/customui" itemSize= "large">
 	<menu id="mBD" imageMso="DataSourceCatalogDataBase" label="Banco de dados">
 		<button id="mBD-Backup" imageMso="BackupSite" label="Fazer backup do sistema" onAction="naAcaoBotao" tag="m_Database.Backup"/>
-		<button id="mBD-UpdateTables" imageMso="DatabaseModelingReverse" label="Atualiza tabelas" onAction="naAcaoBotao" tag="m_Database.AtualizaTabelas"/>
+		<button id="mBD-UpdateTables" imageMso="DatabaseModelingReverse" label="Atualizar tabelas" onAction="naAcaoBotao" tag="m_Database.AtualizaTabelas"/>
 	</menu>
 </menu>

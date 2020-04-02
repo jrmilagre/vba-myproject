@@ -19,6 +19,7 @@ Private oCategoria          As New cCategoria
 Private colControles        As New Collection           ' Para atribuir eventos aos campos
 Private myRst               As New ADODB.Recordset
 Private bAtualizaScrool     As Boolean
+
 Private Sub UserForm_Initialize()
 
     Call PopulaCombos
@@ -204,14 +205,19 @@ End Sub
 Private Sub lstPrincipalPopular(Pagina As Long)
 
     Dim n           As Byte
-    Dim oLegenda     As control
+    Dim oControle   As control
     Dim vDFC        As Variant
+    Dim s()         As String
+    Dim vLegenda    As Variant
     
     ' Limpa cores da legenda
     For n = 1 To myRst.PageSize
-        Set oLegenda = Controls("l" & Format(n, "00")): oLegenda.BackColor = &H8000000F
+        Set oControle = Controls("l" & Format(n, "00")): oControle.BackColor = &H8000000F
     Next n
 
+    ' Carrega coleção de cores da legenda
+    Set oLegenda = oCategoria.GetLegendas
+    
     ' Define página que será exibida do Recordset
     myRst.AbsolutePage = Pagina
     
@@ -248,14 +254,25 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             '.List(.ListCount - 1, 3) = Space(12 - Len(Format(vSalario, "#,##0.00"))) & Format(vSalario, "#,##0.00")
             
             ' Colore a legenda
-            Set oLegenda = Controls("l" & Format(n, "00"))
             
-            If myRst.Fields("grupo").Value = "D" Then
-                oLegenda.BackColor = &HFF& 'Vermelho
-            ElseIf myRst.Fields("grupo").Value = "R" Then
-                oLegenda.BackColor = &HFF0000 ' Azul
-            Else
-                oLegenda.BackColor = &H8000000F 'Cinza (sem cor)
+            ' Define o rótulo que receberá a cor
+            Set oControle = Controls("l" & Format(n, "00"))
+            
+            ' Laço para ler cores armazenadas na coleção de legendas da classe
+            If oLegenda.Count > 0 Then
+            
+                For Each vLegenda In oLegenda
+                    
+                    s() = Split(vLegenda, ";")
+                    
+                    If myRst.Fields("grupo").Value = s(0) Then
+                    
+                        oControle.BackColor = s(2): Exit For
+                        
+                    End If
+                    
+                Next
+            
             End If
             
             ' Próximo registro
@@ -694,7 +711,17 @@ Private Sub btnLimparSelecao_Click()
     Next n
 
 End Sub
+Private Sub lblLegenda_Click()
+    
+    Set oLegenda = New Collection
+    
+    Set oLegenda = oCategoria.GetLegendas
+    
+    f_Legenda.Show
+
+End Sub
 Private Sub lblHdCodigo_Click(): Call BuscaRegistros("id"): End Sub
 Private Sub lblHdCategoria_Click(): Call BuscaRegistros("categoria"): End Sub
 Private Sub lblHdSubcategoria_Click(): Call BuscaRegistros("subcategoria"): End Sub
 Private Sub lblHdGrupo_Click(): Call BuscaRegistros("grupo"): End Sub
+

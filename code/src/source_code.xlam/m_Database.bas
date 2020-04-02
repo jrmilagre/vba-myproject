@@ -21,6 +21,7 @@ Public cat      As ADOX.Catalog
 Public sSQL     As String
 Public oFiltro  As New c_Filtro
 Public oConfig  As New c_Config
+Public oLegenda As Collection
 Public Function Conecta() As Boolean
 
     ' Declara variável(is)

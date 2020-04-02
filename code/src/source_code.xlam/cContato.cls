@@ -148,3 +148,13 @@ Erro:
     MsgBox err.Description, vbCritical, "Erro!"
     
 End Function
+Public Function GetLegendas() As Collection
+
+    Dim col As New Collection
+    
+    col.Add "F;Feminino;&HFF80FF"
+    col.Add "M;Masculino;&HFF8080"
+    
+    Set GetLegendas = col
+
+End Function

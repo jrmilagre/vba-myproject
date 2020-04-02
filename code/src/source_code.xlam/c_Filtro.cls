@@ -29,3 +29,5 @@ Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Prop
 Public Property Get Ordem() As String: Ordem = This.Ordem: End Property
 Public Property Let Ordem(ByVal Value As String): This.Ordem = Value: End Property
 
+
+
