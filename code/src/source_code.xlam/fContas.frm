@@ -22,7 +22,7 @@ Private bAtualizaScrool     As Boolean
 
 Private Sub UserForm_Initialize()
     
-    'Call PopulaCombos
+    Call PopulaCombos
     
     Call Eventos
     
@@ -173,6 +173,9 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     For n = 1 To myRst.PageSize
         Set oControle = Controls("l" & Format(n, "00")): oControle.BackColor = &H8000000F
     Next n
+    
+    ' Carrega coleção de cores da legenda
+    Set oLegenda = oConta.GetLegendas
 
     ' Define página que será exibida do Recordset
     myRst.AbsolutePage = Pagina
@@ -584,5 +587,14 @@ Private Sub lblLimpar_Click()
     txbFiltro.Text = ""
     
     Call BuscaRegistros
+
+End Sub
+Private Sub lblLegenda_Click()
+    
+    Set oLegenda = New Collection
+    
+    Set oLegenda = oContato.GetLegendas
+    
+    f_Legenda.Show
 
 End Sub

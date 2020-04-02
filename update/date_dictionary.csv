@@ -16,3 +16,7 @@ tbl_categorias;categoria;202;255;False;False;Categoria;False;False
 tbl_categorias;subcategoria;202;255;False;False;Subcategoria;False;False
 tbl_categorias;grupo;202;1;False;False;Grupo;False;False
 tbl_categorias;dfc_id;3;0;True;False;Código DFC;False;tbl_dfc.id
+tbl_fornecedores;id;3;0;False;True;Código;True;False
+tbl_fornecedores;nome;202;80;False;False;Nome;False;False
+tbl_lojas;id;3;0;False;True;Código;True;False
+tbl_lojas;nome;202;80;False;False;Nome;False;False
