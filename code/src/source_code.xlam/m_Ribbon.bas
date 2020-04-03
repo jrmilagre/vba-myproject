@@ -9,13 +9,14 @@ Private oXML        As Object
 Public Sub naAcaoBotao(control As IRibbonControl)
 
     Dim frm As Object
-    
 
     If Conecta() = True Then
     
         On Error GoTo Erro
         
         If Mid(control.Tag, 1, 1) = "f" Then
+        
+            oGlobal.ModoAbrir = eModoAbrirForm.Cadastro
             
             Set frm = UserForms.Add(control.Tag)
         

@@ -34,7 +34,7 @@ Public Property Let SaldoInicial(ByVal Value As Currency): This.SaldoInicial = V
 
 ' Métodos
 
-Public Sub CRUD(Acao As Integer, Optional ID As Long)
+Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String)
 
     On Error GoTo Erro
     
@@ -82,6 +82,8 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             
             .Update
             
+            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
+            
         End With
         
     ElseIf Acao = eCrud.Delete Then
@@ -91,6 +93,8 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             .Open sSQL, cnn, adOpenDynamic, adLockOptimistic
             
             .Delete
+            
+            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
             
         End With
         
@@ -145,5 +149,27 @@ Public Function GetLegendas() As Collection
     'col.Add "M;Masculino;&HFF8080"
     
     Set GetLegendas = col
+
+End Function
+Public Function Listar(OrderBy As String) As Collection
+
+    Dim col As New Collection
+
+    sSQL = "SELECT id, conta "
+    sSQL = sSQL & "FROM " & sTabela & " "
+    sSQL = sSQL & "ORDER BY " & OrderBy
+
+    Set rst = New ADODB.Recordset
+    
+    rst.Open sSQL, cnn, adOpenStatic
+
+    Do Until rst.EOF = True
+        col.Add rst.Fields("id").Value & ";" & rst.Fields("conta").Value
+        rst.MoveNext
+    Loop
+
+    Set rst = Nothing
+    
+    Set Listar = col
 
 End Function

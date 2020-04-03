@@ -23,7 +23,7 @@ Private Sub UserForm_Initialize()
     
     Call cbbCamposPopular
 
-    txbFiltro.Text = oFiltro.Filtro
+    txbFiltro.Text = oGlobal.Filtro
 
 End Sub
 Private Sub cbbCamposPopular()
@@ -31,7 +31,7 @@ Private Sub cbbCamposPopular()
     Dim col     As ADOX.Column
     Dim c()     As String
     
-    sTbl = oFiltro.Tabela
+    sTbl = oGlobal.Tabela
     
     Set adxTbl = cat.Tables(sTbl)
 
@@ -113,7 +113,7 @@ Private Sub cbbOperadorPopular()
 
 End Sub
 Private Sub btnAplicar_Click()
-    oFiltro.Filtro = txbFiltro.Text
+    oGlobal.Filtro = txbFiltro.Text
     Unload Me
 End Sub
 Private Sub btnAdicionar_Click()
@@ -131,9 +131,9 @@ Private Sub btnAdicionar_Click()
     sExpressao = txbExpressao.Text
     
     If sExpressaoAnterior = "" Then
-        sExpressao = TrataExpressao(sCampo, sTipoCampo, sOperador, sExpressao) 'sInstrucao '& " " & oFiltro.TrataExpressao(sCampo, cbbCampo.List(cbbCampo.ListIndex, 2), sOperador, txbExpressao.Text)
+        sExpressao = TrataExpressao(sCampo, sTipoCampo, sOperador, sExpressao) 'sInstrucao '& " " & oGlobal.TrataExpressao(sCampo, cbbCampo.List(cbbCampo.ListIndex, 2), sOperador, txbExpressao.Text)
     Else
-        sExpressao = sExpressaoAnterior & " " & TrataExpressao(sCampo, sTipoCampo, sOperador, sExpressao) 'sInstrucao '& " " & oFiltro.TrataExpressao(sCampo, cbbCampo.List(cbbCampo.ListIndex, 2), sOperador, txbExpressao.Text)
+        sExpressao = sExpressaoAnterior & " " & TrataExpressao(sCampo, sTipoCampo, sOperador, sExpressao) 'sInstrucao '& " " & oGlobal.TrataExpressao(sCampo, cbbCampo.List(cbbCampo.ListIndex, 2), sOperador, txbExpressao.Text)
     End If
     
     txbFiltro.Text = sExpressao

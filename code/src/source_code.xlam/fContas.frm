@@ -35,7 +35,11 @@ Private Sub UserForm_Terminate()
     Set oConta = Nothing
     Set myRst = Nothing
     
-    Call Desconecta
+    If oGlobal.ModoAbrir = Cadastro Then
+        
+        Call Desconecta
+        
+    End If
     
 End Sub
 Private Sub btnSaldoInicial_Click()
@@ -103,7 +107,12 @@ Private Sub btnCancelar_Click()
    
     MultiPage1.Value = 0
     
-    lstPrincipal.ListIndex = -1 ' Tira a seleção
+    If oGlobal.ModoAbrir = eModoAbrirForm.Cadastro Then
+        lstPrincipal.ListIndex = -1 ' Tira a seleção
+    Else
+        lstPrincipal.ListIndex = 0
+        lstPrincipal.SetFocus
+    End If
     
 End Sub
 Private Sub lstPrincipal_Change()
@@ -261,14 +270,12 @@ Private Sub Gravar(Decisao As String)
                     .SaldoInicial = CCur(txbSaldoInicial.Text)
                     
                     If Decisao = "Inclusão" Then
-                        .CRUD eCrud.Create
+                        .CRUD eCrud.Create, , Decisao
                     Else
-                        .CRUD eCrud.Update, .ID
+                        .CRUD eCrud.Update, .ID, Decisao
                     End If
                     
                 End With
-                
-                MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
                 
                 Call BuscaRegistros
                                     
@@ -276,9 +283,7 @@ Private Sub Gravar(Decisao As String)
         
         Else ' Se for exclusão
         
-            oConta.CRUD eCrud.Delete, oConta.ID
-                
-            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
+            oConta.CRUD eCrud.Delete, oConta.ID, Decisao
             
             Call BuscaRegistros
             
@@ -364,32 +369,32 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     
     If Ordem <> "" Then
     
-        If oFiltro.Ordem <> "" Then
+        If oGlobal.Ordem <> "" Then
     
-            a() = Split(oFiltro.Ordem, " ")
+            a() = Split(oGlobal.Ordem, " ")
             
-            sOrdem = oFiltro.Ordem
+            sOrdem = oGlobal.Ordem
             
             If Ordem = a(0) Then
                 
                 If a(1) = "ASC" Then
                     Ordem = Ordem & " DESC"
-                    oFiltro.Ordem = Ordem
+                    oGlobal.Ordem = Ordem
                 Else
                     Ordem = Ordem & " ASC"
-                    oFiltro.Ordem = Ordem
+                    oGlobal.Ordem = Ordem
                 End If
             Else
                 
                 Ordem = Ordem & " ASC"
-                oFiltro.Ordem = Ordem
+                oGlobal.Ordem = Ordem
             
             End If
             
         Else
         
             Ordem = Ordem & " ASC"
-            oFiltro.Ordem = Ordem
+            oGlobal.Ordem = Ordem
         
         End If
     
@@ -538,7 +543,21 @@ Private Sub PopulaCombos()
 End Sub
 Private Sub lstPrincipal_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 
-    MultiPage1.Value = 1
+    If oGlobal.ModoAbrir = eModoAbrirForm.Cadastro Then
+        
+        MultiPage1.Value = 1
+        
+    Else
+    
+        If lstPrincipal.ListIndex = -1 Then
+            oGlobal.PesquisaID = Null
+        Else
+            oGlobal.PesquisaID = CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0))
+        End If
+    
+        Unload Me
+    
+    End If
     
 End Sub
 
@@ -548,12 +567,12 @@ Private Sub lblHdSaldoInicial_Click(): Call BuscaRegistros("saldo_inicial"): End
 
 Private Sub lblFiltrar_Click()
 
-    oFiltro.Tabela = "vw_contas" ' Pode ser uma tabela ou consulta
-    oFiltro.Filtro = txbFiltro.Text
+    oGlobal.Tabela = "vw_contas" ' Pode ser uma tabela ou consulta
+    oGlobal.Filtro = txbFiltro.Text
 
     f_Filtro.Show
 
-    txbFiltro.Text = oFiltro.Filtro
+    txbFiltro.Text = oGlobal.Filtro
 
     Call BuscaRegistros
 
@@ -593,8 +612,13 @@ Private Sub lblLegenda_Click()
     
     Set oLegenda = New Collection
     
-    Set oLegenda = oContato.GetLegendas
+    Set oLegenda = oConta.GetLegendas
     
     f_Legenda.Show
 
+End Sub
+Private Sub lstPrincipal_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+
+    If KeyCode = 13 Then Call lstPrincipal_DblClick(Nothing)
+    
 End Sub

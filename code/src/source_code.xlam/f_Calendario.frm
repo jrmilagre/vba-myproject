@@ -197,8 +197,6 @@ Private Sub l6c7_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As 
         l1c1.SetFocus
     End If
 End Sub
-
-
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     '---Impede que se dê Unload no formulário, caso contrário a linha que testa
     '---frm.Tag na linha seguinte do módulo mCalendario dará erro, pois o objeto

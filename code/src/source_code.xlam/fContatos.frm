@@ -386,32 +386,32 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     
     If Ordem <> "" Then
     
-        If oFiltro.Ordem <> "" Then
+        If oGlobal.Ordem <> "" Then
     
-            a() = Split(oFiltro.Ordem, " ")
+            a() = Split(oGlobal.Ordem, " ")
             
-            sOrdem = oFiltro.Ordem
+            sOrdem = oGlobal.Ordem
             
             If Ordem = a(0) Then
                 
                 If a(1) = "ASC" Then
                     Ordem = Ordem & " DESC"
-                    oFiltro.Ordem = Ordem
+                    oGlobal.Ordem = Ordem
                 Else
                     Ordem = Ordem & " ASC"
-                    oFiltro.Ordem = Ordem
+                    oGlobal.Ordem = Ordem
                 End If
             Else
                 
                 Ordem = Ordem & " ASC"
-                oFiltro.Ordem = Ordem
+                oGlobal.Ordem = Ordem
             
             End If
             
         Else
         
             Ordem = Ordem & " ASC"
-            oFiltro.Ordem = Ordem
+            oGlobal.Ordem = Ordem
         
         End If
     
@@ -584,12 +584,12 @@ Private Sub lblHdSalario_Click(): Call BuscaRegistros("salario"): End Sub
 
 Private Sub lblFiltrar_Click()
 
-    oFiltro.Tabela = "tbl_contatos" ' Pode ser uma tabela ou consulta
-    oFiltro.Filtro = txbFiltro.Text
+    oGlobal.Tabela = "tbl_contatos" ' Pode ser uma tabela ou consulta
+    oGlobal.Filtro = txbFiltro.Text
 
     f_Filtro.Show
 
-    txbFiltro.Text = oFiltro.Filtro
+    txbFiltro.Text = oGlobal.Filtro
 
     Call BuscaRegistros
 

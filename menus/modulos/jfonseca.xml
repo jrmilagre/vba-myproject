@@ -21,6 +21,9 @@
 			<button id="smFPE-Cadastros-Fornecedores" imageMso="AppointmentColorDialog" label="Fornecedores" onAction="naAcaoBotao" tag="fFornecedores"/>
 			<button id="smFPE-Cadastros-Lojas" imageMso="AppointmentColorDialog" label="Lojas" onAction="naAcaoBotao" tag="fLojas"/>
 		</menu>
+		<menu id="smFPE-Movimentacoes" image="movimentacoes" label="Movimentações">
+			<button id="smFPE-Movimentacoes-MovimentacaoFinanceira" imageMso="AppointmentColorDialog" label="Movimentações Financeiras" onAction="naAcaoBotao" tag="fMovFin"/>
+		</menu>
 	</menu>	
 
 	<!--Módulo: MEDICINA OCUPACIONAL (MOC)-->

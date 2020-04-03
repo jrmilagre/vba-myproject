@@ -2,26 +2,24 @@ Attribute VB_Name = "m_Calendario"
 Option Private Module
 Option Explicit
 
-Public Const sMascaraData   As String = "DD/MM/YYYY"   ' Máscara de formatação de datas
+Public Const sMascaraData   As String = "DD/MM/YYYY"   ' Formatação de datas
 Public dtDate               As Date
-Dim aBotoes()               As New c_Calendario  ' Vetor que armazena todos os botões de dia do Calendário
+Dim Botoes()                As New c_Calendario  ' Vetor que armazena todos os botões de dia do Calendário
 
-Public Function GetCalendario() As Date
-    ' Função GetCalendario
+Function GetCalendario() As Date
     
-    ' Declara variáveis
-    Dim lTotalBotoes As Long   ' Total de rótulos
+    Dim iTotalBotoes As Integer ' Total de botões
     Dim Ctrl As control
-    Dim frm As New f_Calendario      ' Formulário
+    Dim frm As f_Calendario     ' Formulário
     
-    'Set frm = New fCalendario ' Cria novo objeto setando formulário nele
+    Set frm = New f_Calendario  ' Cria novo objeto setando formulário nele
     
-    ' Atribui cada um dos botões em um elemento do vetor da classe
+    ' Atribui cada um dos Label num elemento do vetor da classe
     For Each Ctrl In frm.Controls
         If Ctrl.Name Like "l?c?" Then
-            lTotalBotoes = lTotalBotoes + 1
-            ReDim Preserve aBotoes(1 To lTotalBotoes)
-            Set aBotoes(lTotalBotoes).btnGrupo = Ctrl
+            iTotalBotoes = iTotalBotoes + 1
+            ReDim Preserve Botoes(1 To iTotalBotoes)
+            Set Botoes(iTotalBotoes).btnGrupo = Ctrl
         End If
     Next Ctrl
     
@@ -35,6 +33,7 @@ Public Function GetCalendario() As Date
     End If
     
     Unload frm
+    
 End Function
     
 

@@ -19,7 +19,7 @@ Public cnn      As ADODB.Connection
 Public rst      As ADODB.Recordset
 Public cat      As ADOX.Catalog
 Public sSQL     As String
-Public oFiltro  As New c_Filtro
+Public oGlobal  As New c_Global
 Public oConfig  As New c_Config
 Public oLegenda As Collection
 Public Function Conecta() As Boolean
@@ -74,6 +74,7 @@ Erro:
 End Function
 Public Sub Desconecta()
     
+    On Error Resume Next
     cnn.Close           ' Fecha o objeto de conexão
     Set cat = Nothing
 

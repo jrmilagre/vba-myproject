@@ -15,7 +15,7 @@ Private Type TClass
     ID           As Long
     Categoria    As String
     Subcategoria As String
-    Grupo        As String
+    Movimento    As String
     DfcID        As Variant
 End Type
 
@@ -34,15 +34,17 @@ Public Property Let Categoria(ByVal Value As String): This.Categoria = Value: En
 Public Property Get Subcategoria() As String: Subcategoria = This.Subcategoria: End Property
 Public Property Let Subcategoria(ByVal Value As String): This.Subcategoria = Value: End Property
 
-Public Property Get Grupo() As String: Grupo = This.Grupo: End Property
-Public Property Let Grupo(ByVal Value As String): This.Grupo = Value: End Property
+Public Property Get Movimento() As String: Movimento = This.Movimento: End Property
+Public Property Let Movimento(ByVal Value As String): This.Movimento = Value: End Property
 
 Public Property Get DfcID() As Variant: DfcID = This.DfcID: End Property
 Public Property Let DfcID(ByVal Value As Variant): This.DfcID = Value: End Property
 
 ' Métodos
 
-Public Sub CRUD(Acao As Integer, Optional ID As Long)
+Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String)
+    
+    On Error GoTo Erro
     
     If ID > 0 Then
     
@@ -61,7 +63,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             Me.ID = .Fields("id").Value
             Me.Categoria = .Fields("categoria").Value
             Me.Subcategoria = .Fields("subcategoria").Value
-            Me.Grupo = .Fields("grupo").Value
+            Me.Movimento = .Fields("movimento").Value
             Me.DfcID = .Fields("dfc_id").Value
             
         End With
@@ -86,10 +88,12 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             
             .Fields("categoria").Value = Me.Categoria
             .Fields("subcategoria").Value = Me.Subcategoria
-            .Fields("grupo").Value = Me.Grupo
+            .Fields("movimento").Value = Me.Movimento
             .Fields("dfc_id").Value = Me.DfcID
             
             .Update
+            
+            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
             
         End With
         
@@ -101,11 +105,19 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             
             .Delete
             
+            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
+            
         End With
         
     End If
     
     Set rst = Nothing
+    
+    Exit Sub
+    
+Erro:
+
+    MsgBox err.Description, vbCritical, "Erro!"
 
 End Sub
 Public Function Todos(Optional Ordem As String, Optional Filtro As String) As ADODB.Recordset
@@ -140,36 +152,46 @@ Erro:
     MsgBox err.Description, vbCritical, "Erro!"
     
 End Function
-Public Function GetDFC(ID As Integer) As String
-
-    Dim r As New ADODB.Recordset
-
-    sSQL = "SELECT grupo FROM tbl_dfc WHERE id = " & ID
-    
-    Set r = cnn.Execute(sSQL)
-    
-    GetDFC = r.Fields("grupo").Value
-    
-    Set r = Nothing
-
-End Function
-Public Function GetGrupos() As Collection
+Public Function GetMovimentos() As Collection
 
     Dim col As New Collection
     
-    col.Add "Receitas,R"
-    col.Add "Despesas,D"
+    col.Add "ENTRADA;E"
+    col.Add "SAÍDA;S"
     
-    Set GetGrupos = col
+    Set GetMovimentos = col
 
 End Function
 Public Function GetLegendas() As Collection
 
     Dim col As New Collection
     
-    col.Add "R;Receitas;&HFF0000"
-    col.Add "D;Despesas;&HFF"
+    col.Add "E;Entrada;&HFF0000"
+    col.Add "S;Saída;&HFF"
     
     Set GetLegendas = col
 
 End Function
+Public Function Listar(OrderBy As String) As Collection
+
+    Dim col As New Collection
+
+    sSQL = "SELECT id, categoria, subcategoria "
+    sSQL = sSQL & "FROM " & sTabela & " "
+    sSQL = sSQL & "ORDER BY " & OrderBy
+
+    Set rst = New ADODB.Recordset
+    
+    rst.Open sSQL, cnn, adOpenStatic
+
+    Do Until rst.EOF = True
+        col.Add rst.Fields("id").Value & ";" & rst.Fields("categoria").Value & ";" & rst.Fields("subcategoria").Value
+        rst.MoveNext
+    Loop
+
+    Set rst = Nothing
+    
+    Set Listar = col
+
+End Function
+

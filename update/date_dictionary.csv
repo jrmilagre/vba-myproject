@@ -14,9 +14,20 @@ tbl_dfc;sequencia;3;0;False;False;Sequencia;False;False
 tbl_categorias;id;3;0;False;True;Código;True;False
 tbl_categorias;categoria;202;255;False;False;Categoria;False;False
 tbl_categorias;subcategoria;202;255;False;False;Subcategoria;False;False
-tbl_categorias;grupo;202;1;False;False;Grupo;False;False
+tbl_categorias;movimento;202;1;False;False;Movimento;False;False
 tbl_categorias;dfc_id;3;0;True;False;Código DFC;False;tbl_dfc.id
 tbl_fornecedores;id;3;0;False;True;Código;True;False
 tbl_fornecedores;nome;202;80;False;False;Nome;False;False
 tbl_lojas;id;3;0;False;True;Código;True;False
 tbl_lojas;nome;202;80;False;False;Nome;False;False
+tbl_mov_fin;id;3;0;False;True;Código;True;False
+tbl_mov_fin;data;7;0;False;False;Data;False;False
+tbl_mov_fin;valor;6;0;False;False;Valor;False;False
+tbl_mov_fin;movimento;202;1;False;False;Movimento;False;False
+tbl_mov_fin;conta_id;3;0;False;False;Código da Conta;False;tbl_contas.id
+tbl_mov_fin;categoria_id;3;0;False;False;Código da Categoria;False;tbl_categorias.id
+tbl_mov_fin;dfc_id;3;0;True;False;Código da DFC;False;tbl_dfc.id
+tbl_mov_fin;fornecedor_id;3;0;True;False;Código do Fornecedor;False;tbl_fornecedores.id
+tbl_mov_fin;loja_id;3;0;True;False;Código da Loja;False;tbl_lojas.id
+tbl_mov_fin;historico;202;255;True;False;Histórico;False;False
+tbl_mov_fin;data_compra;7;0;True;False;Data da compra;False;False

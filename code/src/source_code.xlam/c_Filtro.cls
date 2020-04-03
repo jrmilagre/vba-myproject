@@ -14,6 +14,7 @@ Private Type TClass
     Tabela     As String
     Filtro     As String
     Ordem      As String
+    DFC        As Variant
 End Type
 
 Private This As TClass
@@ -28,6 +29,10 @@ Public Property Let Filtro(ByVal Value As String): This.Filtro = Value: End Prop
 
 Public Property Get Ordem() As String: Ordem = This.Ordem: End Property
 Public Property Let Ordem(ByVal Value As String): This.Ordem = Value: End Property
+
+Public Property Get DFC() As Variant: DFC = This.DFC: End Property
+Public Property Let DFC(ByVal Value As Variant): This.DFC = Value: End Property
+
 
 
 

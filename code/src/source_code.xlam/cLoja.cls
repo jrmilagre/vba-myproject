@@ -30,7 +30,7 @@ Public Property Let Nome(ByVal Value As String): This.Nome = Value: End Property
 
 ' Métodos
 
-Public Sub CRUD(Acao As Integer, Optional ID As Long)
+Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String)
 
     On Error GoTo Erro
     
@@ -75,6 +75,8 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             
             .Update
             
+            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
+            
         End With
         
     ElseIf Acao = eCrud.Delete Then
@@ -84,6 +86,8 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long)
             .Open sSQL, cnn, adOpenDynamic, adLockOptimistic
             
             .Delete
+            
+            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
             
         End With
         
