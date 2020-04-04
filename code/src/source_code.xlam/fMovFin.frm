@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} fMovFin
    ClientHeight    =   9105
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   10020
+   ClientWidth     =   9960
    OleObjectBlob   =   "fMovFin.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -127,36 +127,36 @@ Private Sub lstPrincipal_Change()
             
             oCategoria.CRUD eCrud.Read, .CategoriaID
             txbCategoriaID.Text = oCategoria.ID: txbCategoriaID.TextAlign = fmTextAlignRight
-            lblCategoriaInfo.Caption = oCategoria.Categoria & " : " & oCategoria.Subcategoria
+            txbCategoriaInfo.Text = oCategoria.Categoria & " : " & oCategoria.Subcategoria
             
             cbbMovimento.Value = .Movimento
             
             oConta.CRUD eCrud.Read, .ContaID
             txbContaID.Text = oConta.ID: txbContaID.TextAlign = fmTextAlignRight
-            lblContaInfo.Caption = " " & oConta.Conta
+            txbContaInfo.Text = oConta.Conta
             
             If IsNull(.DfcID) Then
-                txbDfcID.Text = Empty: lblDfcInfo.Caption = ""
+                txbDfcID.Text = Empty: txbDfcInfo.Text = ""
             Else
                 oDfc.CRUD eCrud.Read, .DfcID
                 txbDfcID.Text = oDfc.ID: txbDfcID.TextAlign = fmTextAlignRight
-                lblContaInfo.Caption = " " & oConta.Conta
+                txbContaInfo.Text = " " & oConta.Conta
             End If
 
             If IsNull(.FornecedorID) Then
-                txbFornecedorID.Text = Empty: lblFornecedorInfo.Caption = ""
+                txbFornecedorID.Text = Empty: txbFornecedorInfo.Text = ""
             Else
                 oFornecedor.CRUD eCrud.Read, .FornecedorID
                 txbFornecedorID.Text = oFornecedor.ID: txbFornecedorID.TextAlign = fmTextAlignRight
-                lblFornecedorInfo.Caption = " " & oFornecedor.Nome
+                txbFornecedorInfo.Text = oFornecedor.Nome
             End If
             
             If IsNull(.LojaID) Then
-                txbLojaID.Text = Empty: lblLojaInfo.Caption = ""
+                txbLojaID.Text = Empty: txbLojaInfo.Text = ""
             Else
                 oLoja.CRUD eCrud.Read, .LojaID
                 txbLojaID.Text = oLoja.ID: txbLojaID.TextAlign = fmTextAlignRight
-                lblLojaInfo.Caption = " " & oLoja.Nome
+                txbFornecedorInfo.Text = oLoja.Nome
             End If
             
             txbDataCompra.Text = IIf(IsNull(.DataCompra), "", .DataCompra)
@@ -201,12 +201,12 @@ Private Sub Campos(Acao As String)
         lblCabData.Caption = ""
         txbData.Text = Empty
         txbValor.Text = Format(0, "#,##0.00")
-        txbCategoriaID.Text = Empty
+        txbCategoriaID.Text = Empty: txbCategoriaInfo.Text = Empty
         cbbMovimento.ListIndex = -1
-        txbContaID.Text = Empty
-        txbDfcID.Text = Empty
-        txbFornecedorID.Text = Empty
-        txbLojaID.Text = Empty
+        txbContaID.Text = Empty: txbContaInfo.Text = Empty
+        txbDfcID.Text = Empty: txbDfcInfo.Text = Empty
+        txbFornecedorID.Text = Empty: txbFornecedorInfo.Text = Empty
+        txbLojaID.Text = Empty: txbLojaInfo.Text = Empty
         txbDataCompra.Text = Empty
         txbHistorico.Text = Empty
              
@@ -233,8 +233,8 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     
     With lstPrincipal
         .Clear                                      ' Limpa conteúdo
-        .ColumnCount = 4                            ' Define número de colunas
-        .ColumnWidths = "40pt; 180 pt; 55pt; 60pt;" ' Configura largura das colunas
+        .ColumnCount = 5                            ' Define número de colunas
+        .ColumnWidths = "40pt; 55 pt; 65pt; 190pt; 80pt;"
         .Font = "Consolas"                          ' Configura fonte
         
         n = 1
@@ -246,6 +246,13 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             
             .List(.ListCount - 1, 0) = myRst.Fields("id").Value
             .List(.ListCount - 1, 1) = myRst.Fields("data").Value
+            .List(.ListCount - 1, 2) = Space(ESPACO_ANTES_VALOR - Len(Format(myRst.Fields("valor").Value, "#,##0.00"))) & Format(myRst.Fields("valor").Value, "#,##0.00")
+            
+            oCategoria.CRUD eCrud.Read, myRst.Fields("categoria_id").Value
+            .List(.ListCount - 1, 3) = oCategoria.Categoria & " : " & oCategoria.Subcategoria
+            
+            oConta.CRUD eCrud.Read, myRst.Fields("conta_id").Value
+            .List(.ListCount - 1, 4) = oConta.Conta
             
             ' Colore a legenda
             
@@ -259,11 +266,11 @@ Private Sub lstPrincipalPopular(Pagina As Long)
                     
                     s() = Split(vLegenda, ";")
                     
-'                    If myRst.Fields("genero").Value = s(0) Then
-'
-'                        oControle.BackColor = s(2): Exit For
-'
-'                    End If
+                    If myRst.Fields("movimento").Value = s(0) Then
+
+                        oControle.BackColor = s(2): Exit For
+
+                    End If
                     
                 Next
                 
@@ -643,6 +650,9 @@ End Sub
 
 Private Sub lblHdCodigo_Click(): Call BuscaRegistros("id"): End Sub
 Private Sub lblHdData_Click(): Call BuscaRegistros("data"): End Sub
+Private Sub lblHdValor_Click(): Call BuscaRegistros("valor"): End Sub
+Private Sub lblHdCategoria_Click(): Call BuscaRegistros("categoria"): End Sub
+Private Sub lblHdConta_Click(): Call BuscaRegistros("conta"): End Sub
 
 Private Sub lblFiltrar_Click()
 
@@ -721,10 +731,10 @@ Private Sub btnDfcID_Click()
     If Not IsNull(oGlobal.PesquisaID) Then
         oDfc.CRUD eCrud.Read, oGlobal.PesquisaID
         txbDfcID.Text = oDfc.ID: txbDfcID.TextAlign = fmTextAlignRight
-        lblDfcGrupo.Caption = oDfc.Grupo
+        txbDfcInfo.Text = oDfc.Grupo
     Else
         txbDfcID.Text = Empty
-        lblDfcGrupo.Caption = Empty
+        txbDfcInfo.Text = Empty
     End If
     
 End Sub
@@ -736,19 +746,19 @@ Private Sub txbDfcID_AfterUpdate()
         
         If oDfc.ID = 0 Then
         
-            txbDfcID.Text = ""
-            lblDfcInfo.Caption = " <DFC não existe ou é subtotal!>"
+            txbDfcID.Text = Empty
+            txbDfcInfo.Text = "<DFC não existe ou é subtotal!>"
         
         Else
         
-            lblDfcInfo.Caption = " " & oDfc.Grupo
+            txbDfcInfo.Text = oDfc.Grupo
             
         End If
 
     ElseIf txbDfcID.Text = Empty Then
 
         txbDfcID.Text = Empty
-        lblDfcInfo.Caption = ""
+        txbDfcInfo.Text = Empty
         
     End If
 
@@ -757,51 +767,51 @@ Private Sub btnFornecedorID_Click()
 
     oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fFornecedores.Show
     
-    Call PesquisaBtn(oFornecedor, Controls("txbFornecedorID"), Controls("lblFornecedor"), Controls("lblFornecedorInfo"))
+    Call PesquisaBtn(oFornecedor, Controls("txbFornecedorID"), Controls("lblFornecedor"), Controls("txbFornecedorInfo"))
 
 End Sub
 Private Sub txbFornecedorID_AfterUpdate()
 
-    Call PesquisaTxt(Controls("txbFornecedorID"), Controls("lblFornecedor"), Controls("lblFornecedorInfo"), oFornecedor)
+    Call PesquisaTxt(Controls("txbFornecedorID"), Controls("lblFornecedor"), Controls("txbFornecedorInfo"), oFornecedor)
         
 End Sub
 Private Sub btnCategoriaID_Click()
 
     oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fCategorias.Show
     
-    Call PesquisaBtn(oCategoria, Controls("txbCategoriaID"), Controls("lblCategoria"), Controls("lblCategoriaInfo"))
+    Call PesquisaBtn(oCategoria, Controls("txbCategoriaID"), Controls("lblCategoria"), Controls("txbCategoriaInfo"))
 
 End Sub
 Private Sub txbCategoriaID_AfterUpdate()
 
-    Call PesquisaTxt(Controls("txbCategoriaID"), Controls("lblCategoria"), Controls("lblCategoriaInfo"), oCategoria)
+    Call PesquisaTxt(Controls("txbCategoriaID"), Controls("lblCategoria"), Controls("txbCategoriaInfo"), oCategoria)
         
 End Sub
 Private Sub btnContaID_Click()
 
     oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fContas.Show
     
-    Call PesquisaBtn(oConta, Controls("txbContaID"), Controls("lblConta"), Controls("lblContaInfo"))
+    Call PesquisaBtn(oConta, Controls("txbContaID"), Controls("lblConta"), Controls("txbContaInfo"))
 
 End Sub
 Private Sub txbContaID_AfterUpdate()
 
-    Call PesquisaTxt(Controls("txbContaID"), Controls("lblConta"), Controls("lblContaInfo"), oConta)
+    Call PesquisaTxt(Controls("txbContaID"), Controls("lblConta"), Controls("txbContaInfo"), oConta)
         
 End Sub
 Private Sub btnLojaID_Click()
 
     oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fLojas.Show
     
-    Call PesquisaBtn(oLoja, Controls("txbLojaID"), Controls("lblLoja"), Controls("lblLojaInfo"))
+    Call PesquisaBtn(oLoja, Controls("txbLojaID"), Controls("lblLoja"), Controls("txbLojaInfo"))
 
 End Sub
 Private Sub txbLojaID_AfterUpdate()
 
-    Call PesquisaTxt(Controls("txbLojaID"), Controls("lblLoja"), Controls("lblLojaInfo"), oLoja)
+    Call PesquisaTxt(Controls("txbLojaID"), Controls("lblLoja"), Controls("txbLojaInfo"), oLoja)
         
 End Sub
-Private Sub PesquisaTxt(TextBoxID As control, LabelTitulo As control, LabelInfo As control, Classe As Object)
+Private Sub PesquisaTxt(TextBoxID As control, LabelTitulo As control, TextBoxInfo As control, Classe As Object)
     
     If IsNumeric(TextBoxID.Text) Then
         
@@ -809,46 +819,46 @@ Private Sub PesquisaTxt(TextBoxID As control, LabelTitulo As control, LabelInfo 
         
         If Classe.ID = 0 Then
         
-            TextBoxID.Text = ""
-            LabelInfo.Caption = " <" & LabelTitulo & " não existe!>"
+            TextBoxID.Text = Empty
+            TextBoxInfo.Text = "<" & LabelTitulo & " não existe!>"
         
         Else
         
-            LabelInfo.Caption = " " & GetLabelInfo(Classe)
+            TextBoxInfo.Text = GetTextBoxInfo(Classe)
             
         End If
         
     ElseIf TextBoxID.Text = Empty Then
 
         TextBoxID.Text = Empty
-        LabelInfo.Caption = ""
+        TextBoxInfo.Text = Empty
         
     End If
     
 End Sub
-Private Sub PesquisaBtn(Classe As Object, TextBoxID As control, LabelTitulo As control, LabelInfo As control)
+Private Sub PesquisaBtn(Classe As Object, TextBoxID As control, LabelTitulo As control, TextBoxInfo As control)
     
     If Not IsNull(oGlobal.PesquisaID) Then
 
         Classe.CRUD eCrud.Read, oGlobal.PesquisaID
         TextBoxID.Text = Classe.ID: TextBoxID.TextAlign = fmTextAlignRight
-        LabelInfo.Caption = " " & GetLabelInfo(Classe)
+        TextBoxInfo.Text = GetTextBoxInfo(Classe)
 
     Else
 
         TextBoxID.Text = Empty
-        LabelInfo.Caption = Empty
+        TextBoxInfo.Text = Empty
 
     End If
 
 End Sub
-Private Function GetLabelInfo(Classe As Object) As String
+Private Function GetTextBoxInfo(Classe As Object) As String
 
     Select Case TypeName(Classe)
-        Case "cLoja": GetLabelInfo = Classe.Nome
-        Case "cFornecedor": GetLabelInfo = Classe.Nome
+        Case "cLoja": GetTextBoxInfo = Classe.Nome
+        Case "cFornecedor": GetTextBoxInfo = Classe.Nome
         Case "cCategoria"
-            GetLabelInfo = " " & Classe.Categoria & " : " & Classe.Subcategoria
+            GetTextBoxInfo = " " & Classe.Categoria & " : " & Classe.Subcategoria
             cbbMovimento.Value = Classe.Movimento
             If Not IsNull(Classe.DfcID) Then
                 With txbDfcID
@@ -856,9 +866,9 @@ Private Function GetLabelInfo(Classe As Object) As String
                     .TextAlign = fmTextAlignRight
                 End With
                 oDfc.CRUD eCrud.Read, Classe.DfcID
-                lblDfcInfo.Caption = " " & oDfc.Grupo
+                txbDfcInfo.Text = oDfc.Grupo
             End If
-        Case "cConta": GetLabelInfo = Classe.Conta
+        Case "cConta": GetTextBoxInfo = Classe.Conta
     End Select
 
 End Function

@@ -153,16 +153,31 @@ Erro:
 End Sub
 Public Function Todos(Optional Ordem As String, Optional Filtro As String) As ADODB.Recordset
 
+    Dim sOrdem As String
+
     On Error GoTo Erro:
 
-    sSQL = "SELECT * "
+    sSQL = "SELECT tbl_mov_fin.* "
     sSQL = sSQL & "FROM tbl_mov_fin "
     
+    Select Case Replace(Replace(Ordem, " ASC", ""), " DESC", "")
+        Case "categoria"
+            sSQL = sSQL & "INNER JOIN tbl_categorias ON tbl_categorias.id = tbl_mov_fin.categoria_id "
+            sOrdem = Replace(Ordem, "categoria ", "")
+            Ordem = "tbl_categorias.categoria " & sOrdem & ", tbl_categorias.subcategoria " & sOrdem
+        Case "conta"
+            sSQL = sSQL & "INNER JOIN tbl_contas ON tbl_contas.id = tbl_mov_fin.conta_id "
+            sOrdem = Replace(Ordem, "conta ", "")
+            Ordem = "tbl_contas.conta " & sOrdem & " "
+    End Select
+    
     If Filtro <> "" Then
+
         sSQL = sSQL & "WHERE " & Filtro & " "
     End If
     
     If Ordem <> "" Then
+
         sSQL = sSQL & "ORDER BY " & Ordem
     End If
     
