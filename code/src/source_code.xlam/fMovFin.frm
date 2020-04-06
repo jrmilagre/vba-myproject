@@ -40,7 +40,11 @@ Private Sub UserForm_Terminate()
     Set oMovFin = Nothing
     Set myRst = Nothing
     
-    Call Desconecta
+    If oGlobal.ModoAbrir = Cadastro Then
+        
+        Call Desconecta
+        
+    End If
     
 End Sub
 Private Sub btnIncluir_Click()
@@ -104,7 +108,12 @@ Private Sub btnCancelar_Click()
    
     MultiPage1.Value = 0
     
-    lstPrincipal.ListIndex = -1 ' Tira a seleção
+    If oGlobal.ModoAbrir = eModoAbrirForm.Cadastro Then
+        lstPrincipal.ListIndex = -1 ' Tira a seleção
+    Else
+        lstPrincipal.ListIndex = 0
+        lstPrincipal.SetFocus
+    End If
     
 End Sub
 Private Sub lstPrincipal_Change()
@@ -644,7 +653,21 @@ Private Sub PopulaCombos()
 End Sub
 Private Sub lstPrincipal_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 
-    MultiPage1.Value = 1
+    If oGlobal.ModoAbrir = eModoAbrirForm.Cadastro Then
+        
+        MultiPage1.Value = 1
+        
+    Else
+    
+        If lstPrincipal.ListIndex = -1 Then
+            oGlobal.PesquisaID = Null
+        Else
+            oGlobal.PesquisaID = CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0))
+        End If
+    
+        Unload Me
+    
+    End If
     
 End Sub
 
