@@ -1,4 +1,9 @@
 table;field;type;size;nullable;autoincrement;description;primary_key;foreign_key
+tbl_categorias;id;3;0;False;True;Código;True;False
+tbl_categorias;categoria;202;255;False;False;Categoria;False;False
+tbl_categorias;subcategoria;202;255;False;False;Subcategoria;False;False
+tbl_categorias;movimento;202;1;False;False;Movimento;False;False
+tbl_categorias;dfc_id;3;0;True;False;Código DFC;False;tbl_dfc.id
 tbl_contas;id;3;0;False;True;Código;True;False
 tbl_contas;conta;202;50;False;False;Conta;False;False
 tbl_contas;saldo_inicial;6;0;False;False;Saldo inicial;False;False
@@ -11,11 +16,8 @@ tbl_dfc;id;3;0;False;True;Código;True;False
 tbl_dfc;grupo;202;150;False;False;Grupo;False;False
 tbl_dfc;subtotal;11;0;False;False;Subtotal;False;False
 tbl_dfc;sequencia;3;0;False;False;Sequencia;False;False
-tbl_categorias;id;3;0;False;True;Código;True;False
-tbl_categorias;categoria;202;255;False;False;Categoria;False;False
-tbl_categorias;subcategoria;202;255;False;False;Subcategoria;False;False
-tbl_categorias;movimento;202;1;False;False;Movimento;False;False
-tbl_categorias;dfc_id;3;0;True;False;Código DFC;False;tbl_dfc.id
+tbl_exames;id;3;0;False;True;Código;True;False
+tbl_exames;exame;202;100;False;False;Exame;False;False
 tbl_fornecedores;id;3;0;False;True;Código;True;False
 tbl_fornecedores;nome;202;80;False;False;Nome;False;False
 tbl_lojas;id;3;0;False;True;Código;True;False

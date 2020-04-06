@@ -29,7 +29,7 @@
 	<!--Módulo: MEDICINA OCUPACIONAL (MOC)-->
 	<menu id="mMOC" image="MOC" label="Medicina Ocupacional">
 		<menu id="smMOC-Cadastros" image="cadastros" label="Cadastros">
-			<button id="smMOC-Cadastros-Contatos" imageMso="AppointmentColorDialog" label="Contatos" onAction="naAcaoBotao" tag="fContatos"/>
+			<button id="smMOC-Cadastros-Exames" imageMso="AppointmentColorDialog" label="Exames" onAction="naAcaoBotao" tag="fExames"/>
 		</menu>
 	</menu>		
 	

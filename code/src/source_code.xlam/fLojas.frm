@@ -324,17 +324,31 @@ Private Sub Eventos()
                 
             ElseIf TypeName(oControle) = "Label" Then
                 
-                Set oEvento = New c_Evento
+                If Mid(oControle.Tag, 1, 4) = "tbl_" Then
+                    
+                    sField() = Split(oControle.Tag, ".")
+                    
+                    If cat.Tables(sField(0)).Columns(sField(1)).Properties("Nullable") = False Then
+                        oControle.ForeColor = &HFF0000
+                        oControle.ControlTipText = "Preenchimento obrigatório"
+                    End If
                 
-                Set oEvento.cLabel = oControle
+                Else
                 
-                colControles.Add oEvento
                 
-                If oControle.Tag = "CAB" Then
+                    Set oEvento = New c_Evento
                 
-                    sCor() = Split(oConfig.GetCorInfoCab, " ")
-                    oControle.ForeColor = RGB(CInt(sCor(0)), CInt(sCor(1)), CInt(sCor(2)))
+                    Set oEvento.cLabel = oControle
                 
+                    colControles.Add oEvento
+                
+                    If oControle.Tag = "CAB" Then
+                
+                        sCor() = Split(oConfig.GetCorInfoCab, " ")
+                        oControle.ForeColor = RGB(CInt(sCor(0)), CInt(sCor(1)), CInt(sCor(2)))
+                
+                    End If
+                    
                 End If
                 
             End If
