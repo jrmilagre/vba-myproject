@@ -12,6 +12,7 @@
 		<menu id="smCCI-Cadastros" image="cadastros" label="Cadastros">
 			<button id="smCCI-Cadastros-Clientes" imageMso="AppointmentColorDialog" label="Clientes" onAction="naAcaoBotao" tag="fClientes"/>
 			<button id="smCCI-Cadastros-Fornecedores" imageMso="AppointmentColorDialog" label="Fornecedores" onAction="naAcaoBotao" tag="fFornecedores"/>
+			<button id="smCCI-Cadastros-UMs" imageMso="AppointmentColorDialog" label="Unidades de Medida" onAction="naAcaoBotao" tag="fUMs"/>
 		</menu>
 	</menu>			
 	<!--Módulo: FINANÇAS PESSOAIS (FPE)-->

@@ -24,6 +24,9 @@ tbl_fornecedores;id;3;0;False;True;Código;True;False
 tbl_fornecedores;nome;202;80;False;False;Nome;False;False
 tbl_lojas;id;3;0;False;True;Código;True;False
 tbl_lojas;nome;202;80;False;False;Nome;False;False
+tbl_ums;id;3;0;False;True;Código;True;False
+tbl_ums;abreviacao;202;2;False;False;Abreviação;False;False
+tbl_ums;descricao;202;80;True;False;Descrição;False;False
 tbl_mov_fin;id;3;0;False;True;Código;True;False
 tbl_mov_fin;data;7;0;False;False;Data;False;False
 tbl_mov_fin;valor;6;0;False;False;Valor;False;False
