@@ -10,6 +10,7 @@
 	<!--Módulo: CONSTRUÇÃO CIVIL (CCI)-->
 	<menu id="mCCI" image="CCI" label="Construção Civil">
 		<menu id="smCCI-Cadastros" image="cadastros" label="Cadastros">
+			<button id="smCCI-Cadastros-Clientes" imageMso="AppointmentColorDialog" label="Clientes" onAction="naAcaoBotao" tag="fClientes"/>
 			<button id="smCCI-Cadastros-Fornecedores" imageMso="AppointmentColorDialog" label="Fornecedores" onAction="naAcaoBotao" tag="fFornecedores"/>
 		</menu>
 	</menu>			
@@ -18,8 +19,8 @@
 		<menu id="smFPE-Cadastros" image="cadastros" label="Cadastros">
 			<button id="smFPE-Cadastros-Contas" imageMso="AppointmentColorDialog" label="Contas" onAction="naAcaoBotao" tag="fContas"/>
 			<button id="smFPE-Cadastros-Categorias" imageMso="AppointmentColorDialog" label="Categorias" onAction="naAcaoBotao" tag="fCategorias"/>
-			<button id="smFPE-Cadastros-Fornecedores" imageMso="AppointmentColorDialog" label="Fornecedores" onAction="naAcaoBotao" tag="fFornecedores"/>
 			<button id="smFPE-Cadastros-Lojas" imageMso="AppointmentColorDialog" label="Lojas" onAction="naAcaoBotao" tag="fLojas"/>
+			<button id="smFPE-Cadastros-Fornecedores" imageMso="AppointmentColorDialog" label="Fornecedores" onAction="naAcaoBotao" tag="fFornecedores"/>
 		</menu>
 		<menu id="smFPE-Movimentacoes" image="movimentacoes" label="Movimentações">
 			<button id="smFPE-Movimentacoes-MovimentacaoFinanceira" imageMso="AppointmentColorDialog" label="Movimentações Financeiras" onAction="naAcaoBotao" tag="fMovFin"/>
@@ -29,6 +30,7 @@
 	<!--Módulo: MEDICINA OCUPACIONAL (MOC)-->
 	<menu id="mMOC" image="MOC" label="Medicina Ocupacional">
 		<menu id="smMOC-Cadastros" image="cadastros" label="Cadastros">
+			<button id="smMOC-Cadastros-Clientes" imageMso="AppointmentColorDialog" label="Clientes" onAction="naAcaoBotao" tag="fClientes"/>
 			<button id="smMOC-Cadastros-Exames" imageMso="AppointmentColorDialog" label="Exames" onAction="naAcaoBotao" tag="fExames"/>
 		</menu>
 	</menu>		

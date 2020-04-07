@@ -4,6 +4,8 @@ tbl_categorias;categoria;202;255;False;False;Categoria;False;False
 tbl_categorias;subcategoria;202;255;False;False;Subcategoria;False;False
 tbl_categorias;movimento;202;1;False;False;Movimento;False;False
 tbl_categorias;dfc_id;3;0;True;False;Código DFC;False;tbl_dfc.id
+tbl_clientes;id;3;0;False;True;Código;True;False
+tbl_clientes;nome;202;80;False;False;Nome;False;False
 tbl_contas;id;3;0;False;True;Código;True;False
 tbl_contas;conta;202;50;False;False;Conta;False;False
 tbl_contas;saldo_inicial;6;0;False;False;Saldo inicial;False;False
