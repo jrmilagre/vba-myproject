@@ -129,7 +129,7 @@ Public Function Todos(Optional Ordem As String, Optional Filtro As String) As AD
         .CursorLocation = adUseServer
         .CursorType = adOpenStatic
         .LockType = adLockReadOnly
-        .PageSize = 3
+        .PageSize = 24
         .Open sSQL, cnn
     End With
     

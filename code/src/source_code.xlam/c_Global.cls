@@ -18,7 +18,6 @@ Private Type TClass
     PesquisaID          As Variant
     Find                As Variant
     AbsolutePosition    As Variant
-    AbsolutePage        As Variant
 End Type
 
 Private This As TClass
@@ -45,9 +44,6 @@ Public Property Let Find(ByVal Value As Variant): This.Find = Value: End Propert
 
 Public Property Get AbsolutePosition() As Variant: AbsolutePosition = This.AbsolutePosition: End Property
 Public Property Let AbsolutePosition(ByVal Value As Variant): This.AbsolutePosition = Value: End Property
-
-Public Property Get AbsolutePage() As Variant: AbsolutePage = This.AbsolutePage: End Property
-Public Property Let AbsolutePage(ByVal Value As Variant): This.AbsolutePage = Value: End Property
 
 
 

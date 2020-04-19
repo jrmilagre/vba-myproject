@@ -177,7 +177,6 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     Dim oControle   As control
     Dim s()         As String
     Dim vLegenda    As Variant
-    Dim idxLst      As Integer
     
     ' Limpa cores da legenda
     For n = 1 To myRst.PageSize
