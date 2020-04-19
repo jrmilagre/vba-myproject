@@ -38,7 +38,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String
 
     On Error GoTo Erro
     
-    If ID > 0 Then
+    If Acao <> eCrud.Create Then
     
         sSQL = "SELECT * FROM " & sTabela & " WHERE id = " & ID
         
@@ -79,7 +79,6 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String
             .Fields("conta").Value = Me.Conta
             .Fields("saldo_inicial").Value = Me.SaldoInicial
 
-            
             .Update
             
             MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
@@ -130,7 +129,7 @@ Public Function Todos(Optional Ordem As String, Optional Filtro As String) As AD
         .CursorLocation = adUseServer
         .CursorType = adOpenStatic
         .LockType = adLockReadOnly
-        .PageSize = 24
+        .PageSize = 3
         .Open sSQL, cnn
     End With
     

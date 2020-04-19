@@ -38,7 +38,7 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String
 
     On Error GoTo Erro
     
-    If ID > 0 Then
+    If Acao <> eCrud.Create Then
     
         sSQL = "SELECT * FROM " & sTabela & " WHERE id = " & ID
         

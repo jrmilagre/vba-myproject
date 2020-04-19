@@ -11,11 +11,14 @@ Option Explicit
 
 ' Classe
 Private Type TClass
-    Tabela     As String
-    Filtro     As String
-    Ordem      As String
-    ModoAbrir  As eModoAbrirForm
-    PesquisaID As Variant
+    Tabela              As String
+    Filtro              As String
+    Ordem               As String
+    ModoAbrir           As eModoAbrirForm
+    PesquisaID          As Variant
+    Find                As Variant
+    AbsolutePosition    As Variant
+    AbsolutePage        As Variant
 End Type
 
 Private This As TClass
@@ -36,6 +39,16 @@ Public Property Let ModoAbrir(ByVal Value As eModoAbrirForm): This.ModoAbrir = V
 
 Public Property Get PesquisaID() As Variant: PesquisaID = This.PesquisaID: End Property
 Public Property Let PesquisaID(ByVal Value As Variant): This.PesquisaID = Value: End Property
+
+Public Property Get Find() As Variant: Find = This.Find: End Property
+Public Property Let Find(ByVal Value As Variant): This.Find = Value: End Property
+
+Public Property Get AbsolutePosition() As Variant: AbsolutePosition = This.AbsolutePosition: End Property
+Public Property Let AbsolutePosition(ByVal Value As Variant): This.AbsolutePosition = Value: End Property
+
+Public Property Get AbsolutePage() As Variant: AbsolutePage = This.AbsolutePage: End Property
+Public Property Let AbsolutePage(ByVal Value As Variant): This.AbsolutePage = Value: End Property
+
 
 
 

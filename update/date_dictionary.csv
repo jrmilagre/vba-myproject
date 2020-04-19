@@ -27,14 +27,20 @@ tbl_lojas;nome;202;80;False;False;Nome;False;False
 tbl_ums;id;3;0;False;True;Código;True;False
 tbl_ums;abreviacao;202;2;False;False;Abreviação;False;False
 tbl_ums;descricao;202;80;True;False;Descrição;False;False
+tbl_transferencias;id;3;0;False;True;Código;True;False
+tbl_transferencias;data;7;0;False;False;Data;False;False
+tbl_transferencias;valor;6;0;False;False;Valor;False;False
+tbl_transferencias;ctaorig_id;3;0;False;False;Código da conta de origem;False;tbl_contas.id
+tbl_transferencias;ctadest_id;3;0;False;False;Código da conta de destino;False;tbl_contas.id
 tbl_mov_fin;id;3;0;False;True;Código;True;False
 tbl_mov_fin;data;7;0;False;False;Data;False;False
 tbl_mov_fin;valor;6;0;False;False;Valor;False;False
 tbl_mov_fin;movimento;202;1;False;False;Movimento;False;False
 tbl_mov_fin;conta_id;3;0;False;False;Código da Conta;False;tbl_contas.id
-tbl_mov_fin;categoria_id;3;0;False;False;Código da Categoria;False;tbl_categorias.id
+tbl_mov_fin;categoria_id;3;0;True;False;Código da Categoria;False;tbl_categorias.id
 tbl_mov_fin;dfc_id;3;0;True;False;Código da DFC;False;tbl_dfc.id
 tbl_mov_fin;fornecedor_id;3;0;True;False;Código do Fornecedor;False;tbl_fornecedores.id
 tbl_mov_fin;loja_id;3;0;True;False;Código da Loja;False;tbl_lojas.id
 tbl_mov_fin;historico;202;255;True;False;Histórico;False;False
 tbl_mov_fin;data_compra;7;0;True;False;Data da compra;False;False
+tbl_mov_fin;transferencia_id;3;0;True;False;Código da transferência;False;tbl_transferencias.id

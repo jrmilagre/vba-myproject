@@ -37,6 +37,7 @@ Private Sub UserForm_Terminate()
     
     If oGlobal.ModoAbrir = Cadastro Then
         
+        oGlobal.Find = Null
         Call Desconecta
         
     End If
@@ -110,7 +111,6 @@ Private Sub btnCancelar_Click()
     If oGlobal.ModoAbrir = eModoAbrirForm.Cadastro Then
         lstPrincipal.ListIndex = -1 ' Tira a seleção
     Else
-        lstPrincipal.ListIndex = 0
         lstPrincipal.SetFocus
     End If
     
@@ -177,6 +177,7 @@ Private Sub lstPrincipalPopular(Pagina As Long)
     Dim oControle   As control
     Dim s()         As String
     Dim vLegenda    As Variant
+    Dim idxLst      As Integer
     
     ' Limpa cores da legenda
     For n = 1 To myRst.PageSize
@@ -205,7 +206,6 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             .List(.ListCount - 1, 0) = myRst.Fields("id").Value
             .List(.ListCount - 1, 1) = myRst.Fields("conta").Value
             .List(.ListCount - 1, 2) = Space(15 - Len(Format(myRst.Fields("saldo_inicial").Value, "#,##0.00"))) & Format(myRst.Fields("saldo_inicial").Value, "#,##0.00")
-            
             ' Colore a legenda
             
             ' Define o rótulo que receberá a cor
@@ -235,6 +235,11 @@ Private Sub lstPrincipalPopular(Pagina As Long)
         
     End With
     
+    If Not IsNull(oGlobal.Find) Then
+        lstPrincipal.ListIndex = oGlobal.AbsolutePosition - (((Pagina - 1) * myRst.PageSize) + 1)
+        oGlobal.Find = Null
+    End If
+    
     ' Posiciona scroll de navegação em páginas
     lblPaginaAtual.Caption = Pagina
     lblNumeroPaginas.Caption = myRst.PageCount
@@ -250,7 +255,7 @@ Private Sub Gravar(Decisao As String)
     Dim vbResposta  As VbMsgBoxResult
     Dim e           As eCrud
     
-    On Error GoTo err
+    On Error GoTo Erro
     
     vbResposta = MsgBox("Deseja realmente fazer a " & Decisao & "?", vbYesNo + vbQuestion, "Pergunta")
     
@@ -275,6 +280,8 @@ Private Sub Gravar(Decisao As String)
                         .CRUD eCrud.Update, .ID, Decisao
                     End If
                     
+                    oGlobal.Find = .ID
+                    
                 End With
                 
                 Call BuscaRegistros
@@ -291,7 +298,7 @@ Private Sub Gravar(Decisao As String)
                
     ElseIf vbResposta = vbNo Then
     
-err:
+Erro:
         If Decisao = "Exclusão" Then
             
             Call btnCancelar_Click
@@ -415,16 +422,27 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     
     Set myRst = oConta.Todos(Ordem, txbFiltro.Text)
     
-    If myRst.PageCount > 0 Then
+    If Not myRst.EOF = True Then
         
         bAtualizaScrool = False
         
-        With scrPagina
-            .Max = myRst.PageCount
-            .Value = myRst.PageCount
-        End With
+        If Not IsNull(oGlobal.Find) Then
         
-        Call lstPrincipalPopular(myRst.PageCount)
+            myRst.MoveFirst
+            myRst.Find "id= " & oGlobal.Find, , adSearchForward
+            
+            oGlobal.AbsolutePosition = CLng(myRst.AbsolutePosition)
+            
+        Else
+        
+            myRst.MoveLast
+            
+        End If
+        
+        scrPagina.Max = myRst.PageCount
+        scrPagina.Value = myRst.AbsolutePage
+            
+        Call lstPrincipalPopular(myRst.AbsolutePage)
         
     Else
     

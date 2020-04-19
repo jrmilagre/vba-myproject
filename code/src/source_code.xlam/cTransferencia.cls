@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "cCliente"
+Attribute VB_Name = "cTransferencia"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -12,25 +12,37 @@ Option Explicit
 ' Classe
 
 Private Type TClass
-    ID         As Long
-    Nome       As String
+    ID          As Long
+    Data        As Date
+    Valor       As Currency
+    CtaOrigID   As Long
+    CtaDestID   As Long
 End Type
 
 Private This As TClass
 
-Private Const sTabela As String = "tbl_clientes"
+Private Const sTabela As String = "tbl_transferencias"
 
 ' Propriedades
 
 Public Property Get ID() As Long: ID = This.ID: End Property
 Public Property Let ID(ByVal Value As Long): This.ID = CLng(Value): End Property
 
-Public Property Get Nome() As String: Nome = This.Nome: End Property
-Public Property Let Nome(ByVal Value As String): This.Nome = Value: End Property
+Public Property Get Data() As Date: Data = This.Data: End Property
+Public Property Let Data(ByVal Value As Date): This.Data = Value: End Property
+
+Public Property Get Valor() As Currency: Valor = This.Valor: End Property
+Public Property Let Valor(ByVal Value As Currency): This.Valor = Value: End Property
+
+Public Property Get CtaOrigID() As Long: CtaOrigID = This.CtaOrigID: End Property
+Public Property Let CtaOrigID(ByVal Value As Long): This.CtaOrigID = Value: End Property
+
+Public Property Get CtaDestID() As Long: CtaDestID = This.CtaDestID: End Property
+Public Property Let CtaDestID(ByVal Value As Long): This.CtaDestID = Value: End Property
 
 ' Métodos
 
-Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String)
+Public Sub CRUD(Acao As Integer, Optional ID As Long)
 
     On Error GoTo Erro
     
@@ -49,7 +61,10 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String
             .Open sSQL, cnn, adOpenStatic, adLockReadOnly
         
             Me.ID = .Fields("id").Value
-            Me.Nome = .Fields("nome").Value
+            Me.Data = .Fields("data").Value
+            Me.Valor = .Fields("valor").Value
+            Me.CtaOrigID = .Fields("ctaorig_id").Value
+            Me.CtaDestID = .Fields("ctadest_id").Value
             
         End With
         
@@ -71,11 +86,12 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String
                 
             End If
             
-            .Fields("nome").Value = Me.Nome
+            .Fields("data").Value = Me.Data
+            .Fields("valor").Value = Me.Valor
+            .Fields("ctaorig_id").Value = Me.CtaOrigID
+            .Fields("ctadest_id").Value = Me.CtaDestID
             
             .Update
-            
-            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
             
         End With
         
@@ -86,8 +102,6 @@ Public Sub CRUD(Acao As Integer, Optional ID As Long, Optional Decisao As String
             .Open sSQL, cnn, adOpenDynamic, adLockOptimistic
             
             .Delete
-            
-            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
             
         End With
         
@@ -102,45 +116,3 @@ Erro:
     MsgBox err.Description, vbCritical, "Erro!"
 
 End Sub
-Public Function Todos(Optional Ordem As String, Optional Filtro As String) As ADODB.Recordset
-
-    On Error GoTo Erro:
-
-    sSQL = "SELECT * "
-    sSQL = sSQL & "FROM tbl_clientes "
-    
-    If Filtro <> "" Then
-        sSQL = sSQL & "WHERE " & Filtro & " "
-    End If
-    
-    If Ordem <> "" Then
-        sSQL = sSQL & "ORDER BY " & Ordem
-    End If
-    
-    Set Todos = New ADODB.Recordset
-    
-    With Todos
-        .CursorLocation = adUseServer
-        .CursorType = adOpenStatic
-        .LockType = adLockReadOnly
-        .PageSize = 24
-        .Open sSQL, cnn
-    End With
-    
-    Exit Function
-    
-Erro:
-
-    MsgBox err.Description, vbCritical, "Erro!"
-    
-End Function
-Public Function GetLegendas() As Collection
-
-    Dim col As New Collection
-    
-    'col.Add "F;Feminino;&HFF80FF"
-    'col.Add "M;Masculino;&HFF8080"
-    
-    Set GetLegendas = col
-
-End Function

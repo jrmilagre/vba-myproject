@@ -21,6 +21,7 @@ Private oConta              As New cConta
 Private oDfc                As New cDfc
 Private oFornecedor         As New cFornecedor
 Private oLoja               As New cLoja
+Private oTransferencia      As New cTransferencia
 Private colControles        As New Collection               ' Para eventos de campos
 Private myRst               As New ADODB.Recordset
 Private bAtualizaScrool     As Boolean
@@ -73,16 +74,18 @@ Private Sub PosDecisaoTomada(Decisao As String)
     MultiPage1.Value = 1
     
     If Decisao <> "Exclusão" Then
-    
-        If Decisao = "Inclusão" Then
-        
-            Call Campos("Limpar")
-            
-        End If
         
         Call Campos("Habilitar")
         
-        txbData.SetFocus: txbData.Text = Date
+        If Decisao = "Inclusão" Then
+            
+            Call Campos("Limpar")
+            chbTransferencia.Value = False: Call chbTransferencia_Click
+            txbData.SetFocus: txbData.Text = Date
+                
+        End If
+        
+        
         
     End If
     
@@ -127,49 +130,63 @@ Private Sub lstPrincipal_Change()
     
         With oMovFin
     
-            .CRUD eCrud.Read, (CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0)))
+            .CRUD Acao:=eCrud.Read, _
+                  Transferencia:=chbTransferencia.Value, _
+                  ID:=(CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0)))
+            
+            If IsNull(.TransferenciaID) Then
+                chbTransferencia.Value = False
+                oCategoria.CRUD eCrud.Read, .CategoriaID
+                txbCategoriaID.Text = oCategoria.ID: txbCategoriaID.TextAlign = fmTextAlignRight
+                txbCategoriaInfo.Text = oCategoria.Categoria & " : " & oCategoria.Subcategoria
+                cbbMovimento.Value = .Movimento
+                
+                If IsNull(.DfcID) Then
+                    txbDfcID.Text = Empty: txbDfcInfo.Text = ""
+                Else
+                    oDfc.CRUD eCrud.Read, .DfcID
+                    txbDfcID.Text = oDfc.ID: txbDfcID.TextAlign = fmTextAlignRight
+                    txbContaInfo.Text = " " & oConta.Conta
+                End If
+                
+                If IsNull(.FornecedorID) Then
+                    txbFornecedorID.Text = Empty: txbFornecedorInfo.Text = ""
+                Else
+                    oFornecedor.CRUD eCrud.Read, .FornecedorID
+                    txbFornecedorID.Text = oFornecedor.ID: txbFornecedorID.TextAlign = fmTextAlignRight
+                    txbFornecedorInfo.Text = oFornecedor.Nome
+                End If
+                
+                If IsNull(.LojaID) Then
+                    txbLojaID.Text = Empty: txbLojaInfo.Text = ""
+                Else
+                    oLoja.CRUD eCrud.Read, .LojaID
+                    txbLojaID.Text = oLoja.ID: txbLojaID.TextAlign = fmTextAlignRight
+                    txbFornecedorInfo.Text = oLoja.Nome
+                End If
+                
+                oConta.CRUD eCrud.Read, .ContaID
+                txbContaID.Text = oConta.ID: txbContaID.TextAlign = fmTextAlignRight
+                txbContaInfo.Text = oConta.Conta
+
+                txbDataCompra.Text = IIf(IsNull(.DataCompra), "", .DataCompra)
+                txbHistorico.Text = .Historico
+            Else
+                chbTransferencia.Value = True
+                oTransferencia.CRUD eCrud.Read, .TransferenciaID
+                
+                oConta.CRUD eCrud.Read, oTransferencia.CtaOrigID
+                txbContaID.Text = oConta.ID: txbContaID.TextAlign = fmTextAlignRight: txbContaInfo.Text = oConta.Conta
+                
+                oConta.CRUD eCrud.Read, oTransferencia.CtaDestID
+                txbCtaDestID.Text = oConta.ID: txbCtaDestID.TextAlign = fmTextAlignRight: txbCtaDestInfo.Text = oConta.Conta
+                
+            End If
     
             lblCabID.Caption = IIf(.ID = 0, "", .ID)
             lblCabData.Caption = .Data
             txbData.Text = .Data
             txbValor.Text = Format(.Valor, "#,##0.00")
-            
-            oCategoria.CRUD eCrud.Read, .CategoriaID
-            txbCategoriaID.Text = oCategoria.ID: txbCategoriaID.TextAlign = fmTextAlignRight
-            txbCategoriaInfo.Text = oCategoria.Categoria & " : " & oCategoria.Subcategoria
-            
-            cbbMovimento.Value = .Movimento
-            
-            oConta.CRUD eCrud.Read, .ContaID
-            txbContaID.Text = oConta.ID: txbContaID.TextAlign = fmTextAlignRight
-            txbContaInfo.Text = oConta.Conta
-            
-            If IsNull(.DfcID) Then
-                txbDfcID.Text = Empty: txbDfcInfo.Text = ""
-            Else
-                oDfc.CRUD eCrud.Read, .DfcID
-                txbDfcID.Text = oDfc.ID: txbDfcID.TextAlign = fmTextAlignRight
-                txbContaInfo.Text = " " & oConta.Conta
-            End If
-
-            If IsNull(.FornecedorID) Then
-                txbFornecedorID.Text = Empty: txbFornecedorInfo.Text = ""
-            Else
-                oFornecedor.CRUD eCrud.Read, .FornecedorID
-                txbFornecedorID.Text = oFornecedor.ID: txbFornecedorID.TextAlign = fmTextAlignRight
-                txbFornecedorInfo.Text = oFornecedor.Nome
-            End If
-            
-            If IsNull(.LojaID) Then
-                txbLojaID.Text = Empty: txbLojaInfo.Text = ""
-            Else
-                oLoja.CRUD eCrud.Read, .LojaID
-                txbLojaID.Text = oLoja.ID: txbLojaID.TextAlign = fmTextAlignRight
-                txbFornecedorInfo.Text = oLoja.Nome
-            End If
-            
-            txbDataCompra.Text = IIf(IsNull(.DataCompra), "", .DataCompra)
-            txbHistorico.Text = .Historico
             
         End With
         
@@ -193,6 +210,7 @@ Private Sub Campos(Acao As String)
         
         MultiPage1.Pages(0).Enabled = Not b
         
+        chbTransferencia.Enabled = b
         txbData.Enabled = b: lblData.Enabled = b: btnData.Enabled = b
         txbValor.Enabled = b: lblValor.Enabled = b: btnValor.Enabled = b
         txbCategoriaID.Enabled = b: lblCategoria.Enabled = b: btnCategoriaID.Enabled = b
@@ -203,9 +221,11 @@ Private Sub Campos(Acao As String)
         txbLojaID.Enabled = b: lblLoja.Enabled = b: btnLojaID.Enabled = b
         txbDataCompra.Enabled = b: lblDataCompra.Enabled = b: btnDataCompra.Enabled = b
         txbHistorico.Enabled = b: lblHistorico.Enabled = b
+        txbCtaDestID.Enabled = b: lblCtaDest.Enabled = b: btnCtaDestID.Enabled = b
         
     Else
-    
+        
+        chbTransferencia.Value = False
         lblCabID.Caption = ""
         lblCabData.Caption = ""
         txbData.Text = Empty
@@ -218,6 +238,7 @@ Private Sub Campos(Acao As String)
         txbLojaID.Text = Empty: txbLojaInfo.Text = Empty
         txbDataCompra.Text = Empty
         txbHistorico.Text = Empty
+        txbCtaDestID.Text = Empty: txbCtaDestInfo.Text = Empty
              
     End If
 
@@ -257,8 +278,22 @@ Private Sub lstPrincipalPopular(Pagina As Long)
             .List(.ListCount - 1, 1) = myRst.Fields("data").Value
             .List(.ListCount - 1, 2) = Space(ESPACO_ANTES_VALOR - Len(Format(myRst.Fields("valor").Value, "#,##0.00"))) & Format(myRst.Fields("valor").Value, "#,##0.00")
             
-            oCategoria.CRUD eCrud.Read, myRst.Fields("categoria_id").Value
-            .List(.ListCount - 1, 3) = oCategoria.Categoria & " : " & oCategoria.Subcategoria
+            If IsNull(myRst.Fields("transferencia_id").Value) Then
+                oCategoria.CRUD eCrud.Read, myRst.Fields("categoria_id").Value
+                .List(.ListCount - 1, 3) = oCategoria.Categoria & " : " & oCategoria.Subcategoria
+            Else
+                oTransferencia.CRUD eCrud.Read, myRst.Fields("transferencia_id").Value
+                
+                If myRst.Fields("movimento").Value = "S" Then
+                    oConta.CRUD eCrud.Read, oTransferencia.CtaDestID
+                    .List(.ListCount - 1, 3) = "TRANSF: FOI PARA A CONTA " & oConta.Conta
+                Else
+                    oConta.CRUD eCrud.Read, oTransferencia.CtaOrigID
+                    .List(.ListCount - 1, 3) = "TRANSF: VEIO DA CONTA " & oConta.Conta
+                End If
+                
+            End If
+            
             
             oConta.CRUD eCrud.Read, myRst.Fields("conta_id").Value
             .List(.ListCount - 1, 4) = oConta.Conta
@@ -306,7 +341,7 @@ Private Sub Gravar(Decisao As String)
 
     Dim vbResposta  As VbMsgBoxResult
     
-    On Error GoTo err
+    On Error GoTo Erro
     
     vbResposta = MsgBox("Deseja realmente fazer a " & Decisao & "?", vbYesNo + vbQuestion, "Pergunta")
     
@@ -318,46 +353,91 @@ Private Sub Gravar(Decisao As String)
                 MsgBox "Campo 'Data' é obrigatório", vbCritical: MultiPage1.Value = 1: txbData.SetFocus
             ElseIf txbValor.Text = Empty Or CCur(txbValor.Text) = 0 Then
                 MsgBox "Campo 'Valor' não preenchido ou inválido", vbCritical: MultiPage1.Value = 1: txbValor.SetFocus
-            ElseIf txbCategoriaID.Text = Empty Then
-                MsgBox "Campo 'Categoria' é obrigatório", vbCritical: MultiPage1.Value = 1: txbCategoriaID.SetFocus
-            ElseIf cbbMovimento.ListIndex = -1 Then
-                MsgBox "Campo 'Movimento' é obrigatório", vbCritical: MultiPage1.Value = 1: cbbMovimento.SetFocus
             ElseIf txbContaID.Text = Empty Then
                 MsgBox "Campo 'Conta' é obrigatório", vbCritical: MultiPage1.Value = 1: txbContaID.SetFocus
             Else
-                
-                With oMovFin
-                    
-                    .Data = CDate(txbData.Text)
-                    .Valor = CCur(txbValor.Text)
-                    .Movimento = cbbMovimento.List(cbbMovimento.ListIndex, 0)
-                    .ContaID = CLng(txbContaID.Text)
-                    .CategoriaID = CLng(txbCategoriaID.Text)
-                    If RTrim(txbDfcID.Text) = "" Then .DfcID = Null Else .DfcID = CLng(txbDfcID.Text)
-                    If RTrim(txbFornecedorID.Text) = "" Then .FornecedorID = Null Else .FornecedorID = CLng(txbFornecedorID.Text)
-                    If RTrim(txbLojaID.Text) = "" Then .LojaID = Null Else .LojaID = CLng(txbLojaID.Text)
-                    .Historico = txbHistorico.Text
-                    If RTrim(txbDataCompra.Text) = "" Then .DataCompra = Null Else .DataCompra = CDate(txbDataCompra.Text)
-                    
-                    If Decisao = "Inclusão" Then
-                        .CRUD eCrud.Create
+                If chbTransferencia.Value = False Then
+                    If txbCategoriaID.Text = Empty Then
+                        MsgBox "Campo 'Categoria' é obrigatório", vbCritical: MultiPage1.Value = 1: txbCategoriaID.SetFocus
+                    ElseIf cbbMovimento.ListIndex = -1 Then
+                        MsgBox "Campo 'Movimento' é obrigatório", vbCritical: MultiPage1.Value = 1: cbbMovimento.SetFocus
                     Else
-                        .CRUD eCrud.Update, .ID
+                        With oMovFin
+                            .Data = CDate(txbData.Text)
+                            .Valor = CCur(txbValor.Text)
+                            .Movimento = cbbMovimento.List(cbbMovimento.ListIndex, 0)
+                            .ContaID = CLng(txbContaID.Text)
+                            .CategoriaID = CLng(txbCategoriaID.Text)
+                            If RTrim(txbDfcID.Text) = "" Then .DfcID = Null Else .DfcID = CLng(txbDfcID.Text)
+                            If RTrim(txbFornecedorID.Text) = "" Then .FornecedorID = Null Else .FornecedorID = CLng(txbFornecedorID.Text)
+                            If RTrim(txbLojaID.Text) = "" Then .LojaID = Null Else .LojaID = CLng(txbLojaID.Text)
+                            .Historico = txbHistorico.Text
+                            If RTrim(txbDataCompra.Text) = "" Then .DataCompra = Null Else .DataCompra = CDate(txbDataCompra.Text)
+                            
+                            If Decisao = "Inclusão" Then
+                                .CRUD Acao:=eCrud.Create, _
+                                      Transferencia:=chbTransferencia.Value, _
+                                      Decisao:=Decisao
+                                
+                            Else
+                                .CRUD Acao:=eCrud.Update, _
+                                      Transferencia:=chbTransferencia.Value, _
+                                      ID:=.ID, _
+                                      Decisao:=Decisao
+                            End If
+                            
+                            Call BuscaRegistros
+                            
+                        End With
+            
                     End If
                     
-                End With
+                ElseIf chbTransferencia.Value = True Then
+                    If txbCtaDestID.Text = Empty Then
+                        MsgBox "Campo 'Conta destino' é obrigatório", vbCritical: MultiPage1.Value = 1: txbCtaDestID.SetFocus
+                    ElseIf txbCtaDestID.Text = txbContaID.Text Then
+                        MsgBox "Campo 'Conta destino' não pode ser igual a 'Conta origem'", vbCritical: MultiPage1.Value = 1: txbCtaDestID.SetFocus
+                    Else
+                        With oMovFin
+                            .Data = CDate(txbData.Text)
+                            .Valor = CCur(txbValor.Text)
+                            .ContaID = CLng(txbContaID.Text)
+                            .CategoriaID = Null
+                            .DfcID = Null
+                            .FornecedorID = Null
+                            .LojaID = Null
+                            .Historico = txbHistorico.Text
+                            .DataCompra = Null
+                            .CtaDestID = CLng(txbCtaDestID.Text)
+                            
+                            If Decisao = "Inclusão" Then
+                                .CRUD Acao:=eCrud.Create, _
+                                      Transferencia:=chbTransferencia.Value, _
+                                      Decisao:=Decisao
+                                
+                            Else
+                                .CRUD Acao:=eCrud.Update, _
+                                      Transferencia:=chbTransferencia.Value, _
+                                      ID:=.ID, _
+                                      Decisao:=Decisao
+                            End If
+                            
+                            Call BuscaRegistros
+    
+                        End With
+                        
+                    End If
                 
-                MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
+                End If
                 
-                Call BuscaRegistros
-                                    
             End If
         
         Else ' Se for exclusão
         
-            oMovFin.CRUD eCrud.Delete, oMovFin.ID
-                
-            MsgBox Decisao & " realizada com sucesso.", vbInformation, Decisao & " de registro"
+            oMovFin.CRUD Acao:=eCrud.Delete, _
+                         Transferencia:=chbTransferencia.Value, _
+                         ID:=oMovFin.ID, _
+                         Decisao:=Decisao
             
             Call BuscaRegistros
             
@@ -365,7 +445,7 @@ Private Sub Gravar(Decisao As String)
                
     ElseIf vbResposta = vbNo Then
     
-err:
+Erro:
         If Decisao = "Exclusão" Then
             
             Call btnCancelar_Click
@@ -453,7 +533,7 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     Dim sOrdem  As String
     Dim a()     As String
 
-    On Error GoTo err
+    On Error GoTo Erro
     
     If Ordem <> "" Then
     
@@ -511,7 +591,7 @@ Private Sub BuscaRegistros(Optional Ordem As String)
         
     End If
     
-err:
+Erro:
     Call btnCancelar_Click
     
 End Sub
@@ -811,8 +891,17 @@ Private Sub txbCategoriaID_AfterUpdate()
         
 End Sub
 Private Sub btnContaID_Click()
-
-    oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fContas.Show
+    
+    With oGlobal
+        If txbContaID.Text = Empty Then
+            .Find = Null
+        Else
+            .Find = txbContaID.Text
+        End If
+        .ModoAbrir = eModoAbrirForm.Pesquisa
+    End With
+    
+    fContas.Show
     
     Call PesquisaBtn(oConta, Controls("txbContaID"), Controls("lblConta"), Controls("txbContaInfo"))
 
@@ -909,4 +998,45 @@ Private Sub txbFornecedorID_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVa
 End Sub
 Private Sub txbLojaID_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
     If KeyCode = 115 Then Call btnLojaID_Click
+End Sub
+Private Sub chbTransferencia_Click()
+
+    Dim b As Boolean
+    
+    If chbTransferencia.Value = True Then
+        b = True
+        lblConta.Caption = "Conta origem"
+        lblHistorico.Left = 6: lblHistorico.Top = 125.95
+        txbHistorico.Left = 6: txbHistorico.Top = 138
+        lblCtaDest.Left = 174: lblCtaDest.Top = 84
+        txbCtaDestID.Left = 174: txbCtaDestID.Top = 96
+        btnCtaDestID.Left = 210: btnCtaDestID.Top = 96
+        txbCtaDestInfo.Left = 228: txbCtaDestInfo.Top = 96
+    Else
+        b = False
+        lblConta.Caption = "Conta"
+        lblHistorico.Left = 90: lblHistorico.Top = 168
+        txbHistorico.Left = 90: txbHistorico.Top = 179.95
+    End If
+
+    lblCategoria.Visible = Not b: txbCategoriaID.Visible = Not b: btnCategoriaID.Visible = Not b: txbCategoriaInfo.Visible = Not b
+    lblMovimento.Visible = Not b: cbbMovimento.Visible = Not b
+    lblDFC.Visible = Not b: txbDfcID.Visible = Not b: btnDfcID.Visible = Not b: txbDfcInfo.Visible = Not b
+    lblFornecedor.Visible = Not b: txbFornecedorID.Visible = Not b: btnFornecedorID.Visible = Not b: txbFornecedorInfo.Visible = Not b
+    lblLoja.Visible = Not b: txbLojaID.Visible = Not b: btnLojaID.Visible = Not b: txbLojaInfo.Visible = Not b
+    lblDataCompra.Visible = Not b: txbDataCompra.Visible = Not b: btnDataCompra.Visible = Not b
+    lblCtaDest.Visible = b: txbCtaDestID.Visible = b: btnCtaDestID.Visible = b: txbCtaDestInfo.Visible = b
+
+End Sub
+Private Sub txbCtaDestID_AfterUpdate()
+
+    Call PesquisaTxt(Controls("txbCtaDestID"), Controls("lblCtaDest"), Controls("txbCtaDestInfo"), oConta)
+
+End Sub
+Private Sub btnCtaDestID_Click()
+
+    oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fContas.Show
+    
+    Call PesquisaBtn(oConta, Controls("txbCtaDestID"), Controls("lblCtaDest"), Controls("txbCtaDestInfo"))
+
 End Sub
