@@ -40,6 +40,14 @@ Private Sub UserForm_Terminate()
         oGlobal.Find = Null
         Call Desconecta
         
+    Else
+    
+        If lstPrincipal.ListIndex = -1 Then
+            oGlobal.PesquisaID = Null
+        Else
+            oGlobal.PesquisaID = CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0))
+        End If
+        
     End If
     
 End Sub
@@ -578,12 +586,6 @@ Private Sub lstPrincipal_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
         MultiPage1.Value = 1
         
     Else
-    
-        If lstPrincipal.ListIndex = -1 Then
-            oGlobal.PesquisaID = Null
-        Else
-            oGlobal.PesquisaID = CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0))
-        End If
     
         Unload Me
     

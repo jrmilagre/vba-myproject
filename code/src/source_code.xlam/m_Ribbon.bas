@@ -16,6 +16,8 @@ Public Sub naAcaoBotao(control As IRibbonControl)
         
         If Mid(control.Tag, 1, 1) = "f" Then
         
+            oGlobal.Find = Null
+        
             oGlobal.ModoAbrir = eModoAbrirForm.Cadastro
             
             Set frm = UserForms.Add(control.Tag)
