@@ -48,6 +48,8 @@ Private Sub UserForm_Terminate()
             oGlobal.PesquisaID = CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0))
         End If
         
+        oGlobal.ModoAbrir = eModoAbrirForm.Cadastro
+        
     End If
     
 End Sub
