@@ -244,6 +244,7 @@ Private Sub lstPrincipalPopular(Pagina As Long)
         
     End With
     
+    ' Posiciona no registro invocado, caso exista
     If Not IsNull(oGlobal.Find) Then
         lstPrincipal.ListIndex = oGlobal.AbsolutePosition - (((Pagina - 1) * myRst.PageSize) + 1)
         oGlobal.Find = Null

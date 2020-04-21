@@ -35,7 +35,22 @@ Private Sub UserForm_Terminate()
     Set oContato = Nothing
     Set myRst = Nothing
     
-    Call Desconecta
+    If oGlobal.ModoAbrir = Cadastro Then
+        
+        oGlobal.Find = Null
+        Call Desconecta
+        
+    Else
+    
+        If lstPrincipal.ListIndex = -1 Then
+            oGlobal.PesquisaID = Null
+        Else
+            oGlobal.PesquisaID = CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0))
+        End If
+        
+        oGlobal.ModoAbrir = eModoAbrirForm.Cadastro
+        
+    End If
     
 End Sub
 Private Sub btnSalario_Click()
@@ -107,7 +122,11 @@ Private Sub btnCancelar_Click()
    
     MultiPage1.Value = 0
     
-    lstPrincipal.ListIndex = -1 ' Tira a seleção
+    If oGlobal.ModoAbrir = eModoAbrirForm.Cadastro Then
+        lstPrincipal.ListIndex = -1 ' Tira a seleção
+    Else
+        lstPrincipal.SetFocus
+    End If
     
 End Sub
 Private Sub lstPrincipal_Change()
@@ -247,6 +266,12 @@ Private Sub lstPrincipalPopular(Pagina As Long)
         Wend
         
     End With
+    
+    ' Posiciona no registro invocado, caso exista
+    If Not IsNull(oGlobal.Find) Then
+        lstPrincipal.ListIndex = oGlobal.AbsolutePosition - (((Pagina - 1) * myRst.PageSize) + 1)
+        oGlobal.Find = Null
+    End If
     
     ' Posiciona scroll de navegação em páginas
     lblPaginaAtual.Caption = Pagina
@@ -432,16 +457,27 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     
     Set myRst = oContato.Todos(Ordem, txbFiltro.Text)
     
-    If myRst.PageCount > 0 Then
+    If Not myRst.EOF = True Then
         
         bAtualizaScrool = False
         
-        With scrPagina
-            .Max = myRst.PageCount
-            .Value = myRst.PageCount
-        End With
+        If Not IsNull(oGlobal.Find) Then
         
-        Call lstPrincipalPopular(myRst.PageCount)
+            myRst.MoveFirst
+            myRst.Find "id= " & oGlobal.Find, , adSearchForward
+            
+            oGlobal.AbsolutePosition = CLng(myRst.AbsolutePosition)
+            
+        Else
+        
+            myRst.MoveLast
+            
+        End If
+        
+        scrPagina.Max = myRst.PageCount
+        scrPagina.Value = myRst.AbsolutePage
+            
+        Call lstPrincipalPopular(myRst.AbsolutePage)
         
     Else
     

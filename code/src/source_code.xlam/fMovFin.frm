@@ -43,7 +43,18 @@ Private Sub UserForm_Terminate()
     
     If oGlobal.ModoAbrir = Cadastro Then
         
+        oGlobal.Find = Null
         Call Desconecta
+        
+    Else
+    
+        If lstPrincipal.ListIndex = -1 Then
+            oGlobal.PesquisaID = Null
+        Else
+            oGlobal.PesquisaID = CLng(lstPrincipal.List(lstPrincipal.ListIndex, 0))
+        End If
+        
+        oGlobal.ModoAbrir = eModoAbrirForm.Cadastro
         
     End If
     
@@ -114,7 +125,6 @@ Private Sub btnCancelar_Click()
     If oGlobal.ModoAbrir = eModoAbrirForm.Cadastro Then
         lstPrincipal.ListIndex = -1 ' Tira a seleção
     Else
-        lstPrincipal.ListIndex = 0
         lstPrincipal.SetFocus
     End If
     
@@ -326,6 +336,12 @@ Private Sub lstPrincipalPopular(Pagina As Long)
         Wend
         
     End With
+    
+    ' Posiciona no registro invocado, caso exista
+    If Not IsNull(oGlobal.Find) Then
+        lstPrincipal.ListIndex = oGlobal.AbsolutePosition - (((Pagina - 1) * myRst.PageSize) + 1)
+        oGlobal.Find = Null
+    End If
     
     ' Posiciona scroll de navegação em páginas
     lblPaginaAtual.Caption = Pagina
@@ -570,16 +586,27 @@ Private Sub BuscaRegistros(Optional Ordem As String)
     
     Set myRst = oMovFin.Todos(Ordem, txbFiltro.Text)
     
-    If myRst.PageCount > 0 Then
+    If Not myRst.EOF = True Then
         
         bAtualizaScrool = False
         
-        With scrPagina
-            .Max = myRst.PageCount
-            .Value = myRst.PageCount
-        End With
+        If Not IsNull(oGlobal.Find) Then
         
-        Call lstPrincipalPopular(myRst.PageCount)
+            myRst.MoveFirst
+            myRst.Find "id= " & oGlobal.Find, , adSearchForward
+            
+            oGlobal.AbsolutePosition = CLng(myRst.AbsolutePosition)
+            
+        Else
+        
+            myRst.MoveLast
+            
+        End If
+        
+        scrPagina.Max = myRst.PageCount
+        scrPagina.Value = myRst.AbsolutePage
+            
+        Call lstPrincipalPopular(myRst.AbsolutePage)
         
     Else
     
@@ -809,17 +836,21 @@ Private Sub lblLegenda_Click()
     f_Legenda.Show
 
 End Sub
-Private Sub btnData_Click()
-    dtDate = IIf(txbData.Text = Empty, Date, txbData.Text)
-    txbData.Text = GetCalendario
+Private Sub btnData_Click(): Call AbreCalendario(Controls("txbData")): End Sub
+Private Sub btnDataCompra_Click(): Call AbreCalendario(Controls("txbDataCompra")): End Sub
+Private Sub AbreCalendario(TextBox As control)
+
+    dtDate = IIf(TextBox.Text = Empty, Date, TextBox.Text)
+    TextBox.Text = GetCalendario
+
 End Sub
-Private Sub btnDataCompra_Click()
-    dtDate = IIf(txbDataCompra.Text = Empty, Date, txbDataCompra.Text)
-    txbDataCompra.Text = GetCalendario
-End Sub
-Private Sub btnValor_Click()
-    ccurVisor = IIf(txbValor.Text = "", 0, CCur(txbValor.Text))
-    txbValor.Text = Format(GetCalculadora, "#,##0.00")
+
+Private Sub btnValor_Click(): Call AbreCalculadora(Controls("txbValor")): End Sub
+Private Sub AbreCalculadora(TextBox As control)
+
+    ccurVisor = IIf(TextBox.Text = "", 0, CCur(TextBox.Text))
+    TextBox.Text = Format(GetCalculadora, "#,##0.00")
+
 End Sub
 Private Sub btnDfcID_Click()
     
@@ -867,10 +898,8 @@ Private Sub txbDfcID_AfterUpdate()
 
 End Sub
 Private Sub btnFornecedorID_Click()
-
-    oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fFornecedores.Show
     
-    Call PesquisaBtn(oFornecedor, Controls("txbFornecedorID"), Controls("lblFornecedor"), Controls("txbFornecedorInfo"))
+    Call PesquisaBtn(oFornecedor, Controls("txbFornecedorID"), Controls("lblFornecedor"), Controls("txbFornecedorInfo"), "fFornecedores")
 
 End Sub
 Private Sub txbFornecedorID_AfterUpdate()
@@ -879,10 +908,8 @@ Private Sub txbFornecedorID_AfterUpdate()
         
 End Sub
 Private Sub btnCategoriaID_Click()
-
-    oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fCategorias.Show
     
-    Call PesquisaBtn(oCategoria, Controls("txbCategoriaID"), Controls("lblCategoria"), Controls("txbCategoriaInfo"))
+    Call PesquisaBtn(oCategoria, Controls("txbCategoriaID"), Controls("lblCategoria"), Controls("txbCategoriaInfo"), "fCategorias")
 
 End Sub
 Private Sub txbCategoriaID_AfterUpdate()
@@ -892,18 +919,7 @@ Private Sub txbCategoriaID_AfterUpdate()
 End Sub
 Private Sub btnContaID_Click()
     
-    With oGlobal
-        If txbContaID.Text = Empty Then
-            .Find = Null
-        Else
-            .Find = txbContaID.Text
-        End If
-        .ModoAbrir = eModoAbrirForm.Pesquisa
-    End With
-    
-    fContas.Show
-    
-    Call PesquisaBtn(oConta, Controls("txbContaID"), Controls("lblConta"), Controls("txbContaInfo"))
+    Call PesquisaBtn(oConta, Controls("txbContaID"), Controls("lblConta"), Controls("txbContaInfo"), "fContas")
 
 End Sub
 Private Sub txbContaID_AfterUpdate()
@@ -912,10 +928,8 @@ Private Sub txbContaID_AfterUpdate()
         
 End Sub
 Private Sub btnLojaID_Click()
-
-    oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fLojas.Show
     
-    Call PesquisaBtn(oLoja, Controls("txbLojaID"), Controls("lblLoja"), Controls("txbLojaInfo"))
+    Call PesquisaBtn(oLoja, Controls("txbLojaID"), Controls("lblLoja"), Controls("txbLojaInfo"), "fLojas")
 
 End Sub
 Private Sub txbLojaID_AfterUpdate()
@@ -948,8 +962,23 @@ Private Sub PesquisaTxt(TextBoxID As control, LabelTitulo As control, TextBoxInf
     End If
     
 End Sub
-Private Sub PesquisaBtn(Classe As Object, TextBoxID As control, LabelTitulo As control, TextBoxInfo As control)
+Private Sub PesquisaBtn(Classe As Object, TextBoxID As control, LabelTitulo As control, TextBoxInfo As control, Formulario As String)
     
+    Dim frm As Object
+    
+    With oGlobal
+        If TextBoxID.Text = Empty Then
+            .Find = Null
+        Else
+            .Find = TextBoxID.Text
+        End If
+        .ModoAbrir = eModoAbrirForm.Pesquisa
+    End With
+    
+    Set frm = UserForms.Add(Formulario)
+        
+    frm.Show
+
     If Not IsNull(oGlobal.PesquisaID) Then
 
         Classe.CRUD eCrud.Read, oGlobal.PesquisaID
@@ -1035,8 +1064,6 @@ Private Sub txbCtaDestID_AfterUpdate()
 End Sub
 Private Sub btnCtaDestID_Click()
 
-    oGlobal.ModoAbrir = eModoAbrirForm.Pesquisa: fContas.Show
-    
-    Call PesquisaBtn(oConta, Controls("txbCtaDestID"), Controls("lblCtaDest"), Controls("txbCtaDestInfo"))
+    Call PesquisaBtn(oConta, Controls("txbCtaDestID"), Controls("lblCtaDest"), Controls("txbCtaDestInfo"), "fContas")
 
 End Sub
